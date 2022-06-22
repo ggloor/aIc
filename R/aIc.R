@@ -1,0 +1,77 @@
+#' \code{aIc.coherent} am I coherent: calculates the subcompositional coherence of a sample in
+#'   a dataset for a given correction. This compares the correlation coefficients
+#'   of features in common of the full dataset and a subset of the dataset.
+#'   This is expected to be false in all compositional datasets and transforms. 
+#'
+#' @param data can be any dataframe or matrix with samples by column
+#' @param norm.method can be prop, clr, RLE, TMM, TMMwsp
+#' @param zero.method is a logical. Filter data to remove features that are 0
+#'   across all samples. Default is TRUE
+#' @param log is a logical. log transform the RLE or TMM outputs, default=FALSE
+#' @param group is a vector containing group information. Required fro RLE and 
+#'   TMM based normalizations.
+#'
+#' @return Returns a list with the correlation in \code{cor}, a yes/no binary 
+#'   decision in \code{is.coherent},  the x and y values for a scatterplot
+#'   of the correlations in the full and subcompositions, and the plot and axis
+#'   labels in \code{main} \code{xlab} and \code{ylab}. 
+#'
+#' @author Greg Gloor
+#'
+#' @export aIc.coherent
+#' @importFrom grDevices rgb
+#' @importFrom graphics abline hist
+#' @importFrom stats cor cov dist runif
+#' @import ALDEx2 
+#' @examples
+#' library(ALDEx2)
+#' data(selex)
+#' group = c(rep('N', 7), rep('S', 7))
+#' x <- aIc.coherent(selex, norm.method='prop')
+#' plot(x$plot[,1], x$plot[,2], main=x$main, ylab=x$ylab, xlab=x$xlab)
+aIc.coherent <- function(data, norm.method='prop', 
+  zero.method='TRUE',log=FALSE, group=NULL){
+  
+  # remove features with 0 counts across all samples only
+  if(zero.method == TRUE){
+    data <- data[rowSums(data) > 0,]
+  }
+  # aIc.get.data() is the normalization function
+ 
+  size.sub <- floor(nrow(data)/2)
+  data.sub <- data[1:size.sub,]
+  
+  x.1 <- aIc.get.data(data, group=group, norm.method=norm.method, log=log)
+  x.2 <- aIc.get.data(data.sub, group=group, norm.method=norm.method, log=log)
+  
+  c.x1 <- cor(t(x.1))
+  c.x2 <- cor(t(x.2))
+  
+  v.x1 <- c(c.x1[1:size.sub,1:size.sub])
+  v.x2 <- c(c.x2)
+  
+  # convert the correlations to a vector
+  cohere <- cor(v.x1, v.x2)
+  is.comp <- vector()
+  if(cohere < 1){ 
+    is.comp = 'No'
+  } else {
+    is.comp = 'Yes'
+  }
+  
+  r.num = floor(runif(10000, min=1, max=length(v.x1)))
+  
+  if( length(v.x1) < length(r.num) ) {
+    plot.out <- cbind(v.x1, v.x2)
+  } else {
+    plot.out <- cbind(v.x1[r.num], v.x2[r.num])
+  }	
+  
+  colnames(plot.out) <- c('sub', 'full')
+  main=paste('correlation between full and sub is: ', round(cohere,4))
+  xlab='sub composition'
+  ylab='full composition' 
+  
+  return(list(cor = cohere, is.coherent = is.comp, plot=plot.out, main=main, xlab=xlab, ylab=ylab))
+}
+

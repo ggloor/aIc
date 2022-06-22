@@ -1,0 +1,18 @@
+Package: aIc
+Type: Package
+Title: Testing for compositional pathologies in datasets
+Version: 0.1
+Date: 2022-06-20
+Author: Greg Gloor
+Maintainer: Greg Gloor <ggloor@uwo.ca>
+Description: A set of tests for compositional pathologies. Tests for coherence of correlations with \code{aIc.coherent}, compositional dominance of distance with \code{aIc.dominant}, compositional perturbation invariance with \code{aIc.perturb}and singularity of the covariation matrix with \code{aIc.singular}. Currentlytests five data transformations: prop, clr, TMM, TMMwsp, and RLE.
+License: file LICENSE
+URL: https://github.com/ggloor/aIc
+BugReports: https://github.com/ggloor/aIc/issues
+RoxygenNote: 7.2.0
+VignetteBuilder: knitr
+Imports:
+  edgeR,
+  ALDEx2,
+  knitr,
+  matrixcalc
