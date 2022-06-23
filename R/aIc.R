@@ -32,10 +32,11 @@
 aIc.coherent <- function(data, norm.method='prop', 
   zero.method='TRUE',log=FALSE, group=NULL){
   
-  # remove features with 0 counts across all samples only
-  if(zero.method == TRUE){
-    data <- data[rowSums(data) > 0,]
+  # remove features with 0 counts across >95% of samples 
+  if(zero.method == 'remove'){
+  	data <- remove_0(data)
   }
+
   # aIc.get.data() is the normalization function
  
   size.sub <- floor(nrow(data)/2)

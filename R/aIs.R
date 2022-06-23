@@ -28,9 +28,9 @@
 
 aIc.singular <- function(data, norm.method='prop', zero.method='remove', log=FALSE, group=NULL){
   
-  # remove features with 0 counts across all samples only
+  # remove features with 0 counts across >95% of samples 
   if(zero.method == 'remove'){
-    data <- data[rowSums(data) > 0,]
+  	data <- remove_0(data)
   }
 
   x.1 <- aIc.get.data(data, group=group, norm.method=norm.method, log=log)

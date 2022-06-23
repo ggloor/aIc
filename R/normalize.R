@@ -46,3 +46,13 @@ aIc.get.norm <- function(data, norm.method, group, log=FALSE){
 		}
 	}
 }
+
+#' removes 0 only rows
+#' filters by at least 95% non-0 occurrence
+remove_0 <- function(data){
+    data <- data[rowSums(data) > 0,]
+    n0 <- apply(data, 1, function(x) length(which(x == 0)))
+    max.0 = ncol(data) *.95
+    return(data[n0 < max.0,])
+    
+}

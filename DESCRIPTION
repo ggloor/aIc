@@ -14,5 +14,9 @@ VignetteBuilder: knitr
 Imports:
   edgeR,
   ALDEx2,
-  knitr,
-  matrixcalc
+  matrixcalc,
+  zCompositions
+Suggests: 
+  BiocStyle, 
+  knitr, 
+  rmarkdown

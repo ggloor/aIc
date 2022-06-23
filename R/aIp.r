@@ -22,6 +22,7 @@
 #' @author Greg Gloor
 #'
 #' @export aIc.perturb
+#' @importFrom zCompositions cmultRepl
 #'
 #' @examples
 #' library(ALDEx2)
@@ -31,11 +32,10 @@
 #' plot(x$plot, main=x$main, ylab=x$ylab, xlab=x$xlab)
 aIc.perturb <- function(data, norm.method='prop', zero.method='remove', log=FALSE, group=NULL){
   
-  # remove features with 0 counts across all samples only
+  # remove features with 0 counts across >95% of samples 
   if(zero.method == 'remove'){
-    data <- data[rowSums(data) > 0,]
+  	data <- remove_0(data)
   }
-
 
   perturb <- as.vector(apply(data, 1, min) > 0)
   perturb[perturb == T] <- 5
@@ -43,6 +43,7 @@ aIc.perturb <- function(data, norm.method='prop', zero.method='remove', log=FALS
   data.perturb <- data * perturb
   
 # leave this for another day
+# can implement if zero method is universally 'remove'
 #  library(zCompositions)
 #  data <- t(cmultRepl(t(data), method='GBM', output='p-counts'))
 #  data.perturb <- t(cmultRepl(t(data.perturb), method='GBM', output='p-counts'))
