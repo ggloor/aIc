@@ -1,0 +1,138 @@
+---
+title: "aIc: am I compositional?"
+author: "Greg Gloor"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+package: aIc
+abstract: >
+  Document summary
+output: 
+  BiocStyle::html_document:
+    toc_float: true
+    toc_depth: 2
+vignette: >
+  %\VignetteIndexEntry{aIc: am I compositional?}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}  
+---
+  
+# A simple test function to determine if the data have typical compositional data pathologies or are pathological in some other way.
+
+The overall idea here is that pathologies in data have knock-on effects for analysis and one should  be aware of this prior to starting an analysis. In the context of high throughput sequencing, the same library can be sequenced on instruments that give vastly different numbers of output reads (from 1M to $\ge$ 2B reads). Thus, three important properties should be scale invariance, perturbation invariance, and sub-compositional dominance. These, and others, are outlined below.
+
+## List of common data pathologies:
+
+1) Singular covariance matrix: This imposes analysis constraints on the data. In practice almost all HTS datasets are singular because they are high dimensional: there are more samples than features. However, even non-singular starting matrices are converted to singular matrices by the clr and common transforms. This property is thus a given for all datasets, but is included for completeness.
+
+2) Sub-compositional coherence: This means that correlations between features are not identical for the full dataset and any feature subset of that dataset. This is not preserved for any transformation tested here and these papers will get you started^[Lovell et al. (2015) https://doi.org/10.1371/journal.pcbi.1004075, Quinn et al. (2017) https://doi.org/10.1038/s41598-017-16520-0, Egozcue et al. https://doi.org/10.17713/ajs.v47i1.689]. Sub-compositional coherence is possible with isometric log-ratios but these are not instantiated in differential abundance packages.
+
+3) Sub-compositional distance dominance: This property means that any feature subset of the data should have smaller distances between samples than the full dataset (or any superset of the subset). This property should be met by any compositionally appropriate transform which converts features to be linearly different (as the centred log-ratio transform does).
+
+4) Scale invariance: This property means that changing the scale of the data --- multiplying or dividing by and arbitrary value --- should have no or only a minimal effect on the distances between samples.
+
+5) Perturbation invariance: This property means that simple perturbations of the data or a subset of the data should have minimal effects on the outcome. In particular, should have minimal effects on distances between samples. This is because in a composition, a perturbation, a multiplicative change in the feature, simply moves the dataset from one place to another in the sample space. 
+
+```{r, echo=F}
+
+library(aIc)
+library(matrixcalc)
+library(edgeR)
+library(ALDEx2)
+data(selex)
+group <- c(rep('n',7), rep('s',7))
+```
+
+The selex dataset^[McMurrough et al (2018) https://doi.org/10.1093/nar/gky976] is a favourite of mine to use because we have a standard of truth, and because it behaves so badly with so many tools. It is included as the test dataset in the ALDEx2 R package^[Fernandes et al (2014) https://doi.org/10.1186/2049-2618-2-15] and can be accessed there. 
+
+# Sub-compositions and correlation (coherence)
+
+The first test is for correlation in a full dataset and a subset of the data and if different the data are compostions and need to be treated as such. This is a correlation coherence test. Correlations in compositional data are not stable to subsetting and any transformation that is not coherent should not be trusted to build correlation networks.
+
+As a simple example, let's try the selex dataset with the clr and log of the edgeR TMM transformation. Here the expected result is that the features are not sub-compostionally coherent under the test as shown by Lovell in 2015. 
+
+In other words, correlations change as different filtering and pre-processing steps are performed on the data. If this happens in your data with your transformation do not use correlation, and use a compositionally appropriate measure of association. 
+
+```{r, echo=T}
+
+test.cor.clr <- aIc.coherent(selex, group=group, norm.method='clr', log=F)
+test.cor.TMM <- aIc.coherent(selex, group=group, norm.method='TMM', log=T)
+test.cor.clr$is.coherent
+test.cor.TMM$is.coherent
+par(mfrow=c(1,2))
+plot(test.cor.clr$plot)
+plot(test.cor.TMM$plot)
+
+```
+Thus, we see that under the clr and TMM, features in common between sub-compositions and the full composition display variable correlations. 
+
+# Sub-compositions and distance (dominance)
+
+The second test is sub-compositional dominance. That is, the subset should always have an equal or smaller difference between samples than the full (non-subsetted) dataset. We will use the same dataset and transforms. 
+
+
+```{r, echo=T}
+
+test.dom.clr <- aIc.dominant(selex, group=group, norm.method='clr', log=F)
+test.dom.TMM <- aIc.dominant(selex, group=group, norm.method='TMM', log=T)
+test.dom.clr$is.dominant
+test.dom.TMM$is.dominant
+par(mfrow=c(1,2))
+plot(test.dom.clr$plot)
+plot(test.dom.TMM$plot)
+
+```
+
+Here both transforms are distance dominant and the x-axis is the proportion of divergenece from the distances in the full composition. Note however the large and bimodal distance dominant property of the log(TMM) transformation. 
+
+
+# Testing for scale invariance
+
+The third test is scale invariance. That is, the data should have the same distance between samples when the scale (sequencing depth) changes. We will use the same dataset and transforms
+
+
+```{r, echo=T}
+
+test.scale.clr <- aIc.scale(selex, group=group, norm.method='clr', log=F)
+test.scale.TMM <- aIc.scale(selex, group=group, norm.method='TMM', log=T)
+test.scale.clr$is.scale
+test.scale.TMM$is.scale
+par(mfrow=c(1,2))
+plot(test.scale.clr$plot)
+plot(test.scale.TMM$plot)
+
+```
+
+Here neither transforms is scale invariant, and the x-axis is the proportion of divergenece from the distances in the unscaled composition. Note again the large and bimodal distance divergence of the log(TMM) transformation. 
+
+# Testing for perturbation invariance
+
+The fourth test is perturbation invariance. That is, the data should have the same distance between samples when one or a few of the features have some perturbation. In the context of a HTS experiment, this could correspond to a systematic difference between feature capture  or feature sequencing probability for a subset of the features.
+
+
+```{r, echo=T}
+
+test.perturb.clr <- aIc.perturb(selex, group=group, norm.method='clr', log=F)
+test.perturb.TMM <- aIc.perturb(selex, group=group, norm.method='TMM', log=T)
+test.perturb.clr$is.perturb
+test.perturb.TMM$is.perturb
+par(mfrow=c(1,2))
+plot(test.perturb.clr$plot)
+plot(test.perturb.TMM$plot)
+
+```
+
+Here neither transforms is scale invariant, and the x-axis is the proportion of divergenece from the distances in the unscaled composition. However, note that the clr transform has less than 1% divergence after perturbation while the log(TMM) is again bimodal and large---ranging to over 12% divergence in distance. Here the clr is the obviously better choice. 
+
+
+# Conclusion
+
+I hope you can see that data pathologies can have real world implications for your analysis.
+
+The failure of sub-compositional coherence means that any network analysis that is done using anything other than a compositionally appropriate measure is doomed to failure if and when the data are cleaned or otherwise manipulated.
+
+Distance dominance, scale invariance and perturbation invariance have obvious implications for dimension reduction and clustering. In all cases, the clr was preferred over the log(TMM) normalization and this one part of the ALDEx2 secret sauce as a generally useful tool.
+ 
+# SessionInfo
+
+```{r}
+sessionInfo()
+```
