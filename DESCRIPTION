@@ -1,7 +1,7 @@
 Package: aIc
 Type: Package
 Title: Testing for compositional pathologies in datasets
-Version: 0.1
+Version: 0.1.1
 Date: 2022-06-24
 Author: Greg Gloor
 Maintainer: Greg Gloor <ggloor@uwo.ca>

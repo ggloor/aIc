@@ -1,24 +1,28 @@
-#' \code{aIc.coherent} am I coherent: calculates the subcompositional coherence of a sample in
-#'   a dataset for a given correction. This compares the correlation coefficients
-#'   of features in common of the full dataset and a subset of the dataset.
-#'   This is expected to be false in all compositional datasets and transforms. 
+#' Calculate the subcompositional coherence of samples in
+#' a dataset for a given correction. 
+#'
+#' `aIc.coherent` compares the correlation coefficients
+#' of features in common of the full dataset and a subset of the dataset.
+#' This is expected to be false for all compositional datasets and transforms. 
 #'
 #' @param data can be any dataframe or matrix with samples by column
-#' @param norm.method can be prop, clr, RLE, TMM, TMMwsp
-#' @param zero.method is a logical. Filter data to remove features that are 0
-#'   across all samples. Default is TRUE
-#' @param log is a logical. log transform the RLE or TMM outputs, default=FALSE
-#' @param group is a vector containing group information. Required fro RLE and 
-#'   TMM based normalizations.
+#' @param norm.method can be prop, clr, RLE, TMM, TMMwsp, lvha, iqlr
+#' @param zero.remove is a logical. Filter data to remove features that are 0 
+#' across a proportion of samples over 0.95. Default=TRUE
+#' @param zero.method can be any of NULL, prior, GBM or CZM. NULL will not 
+#' impute or change 0 values, GBM and CZM are from the 
+#' zCompositions R package, and prior will simply add 0.5 to all counts.
+#' @param log is a logical. log transform the prop, RLE or TMM outputs, default=FALSE
+#' @param group is a vector containing group information. Required for clr, RLE, 
+#' TMM, lvha, and iqlr based normalizations.
 #'
 #' @return Returns a list with the correlation in \code{cor}, a yes/no binary 
-#'   decision in \code{is.coherent},  the x and y values for a scatterplot
-#'   of the correlations in the full and subcompositions, and the plot and axis
-#'   labels in \code{main} \code{xlab} and \code{ylab}. 
+#' decision in \code{is.coherent},  the x and y values for a scatterplot
+#' of the correlations in the full and subcompositions, and the plot and axis
+#' labels in \code{main} \code{xlab} and \code{ylab}. 
 #'
 #' @author Greg Gloor
 #'
-#' @export aIc.coherent
 #' @importFrom grDevices rgb
 #' @importFrom graphics abline hist
 #' @importFrom stats cor cov dist runif
@@ -27,21 +31,24 @@
 #' library(ALDEx2)
 #' data(selex)
 #' group = c(rep('N', 7), rep('S', 7))
-#' x <- aIc.coherent(selex, norm.method='prop')
+#' x <- aIc.coherent(selex, group=group, norm.method='clr', zero.method='prior')
 #' plot(x$plot[,1], x$plot[,2], main=x$main, ylab=x$ylab, xlab=x$xlab)
-aIc.coherent <- function(data, norm.method='prop', 
-  zero.method='TRUE',log=FALSE, group=NULL){
-  
+#'
+#' @export
+aIc.coherent <- function(data, norm.method="prop", zero.remove=TRUE, zero.method=NULL, log=FALSE, group=NULL){
+
   # remove features with 0 counts across >95% of samples 
-  if(zero.method == 'remove'){
+  if(zero.remove == TRUE){
   	data <- remove_0(data)
   }
+  # zero subustitution
+  data <- zero.sub(data, zero.method)
 
   # aIc.get.data() is the normalization function
  
   size.sub <- floor(nrow(data)/2)
   data.sub <- data[1:size.sub,]
-  
+
   x.1 <- aIc.get.data(data, group=group, norm.method=norm.method, log=log)
   x.2 <- aIc.get.data(data.sub, group=group, norm.method=norm.method, log=log)
   

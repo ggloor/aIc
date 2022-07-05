@@ -5,12 +5,16 @@
 #'   compositional datasets. 
 #'
 #' @param data can be any dataframe or matrix with samples by column
-#' @param norm.method can be prop, clr, RLE, TMM, TMMwsp
-#' @param zero.method is a logical. Filter data to remove features that are 0
-#'   across all samples. Default is TRUE
+#' @param norm.method can be prop, clr, iqlr, lvha, RLE, TMM, TMMwsp
+#' @param zero.remove is a logical. Filter data to remove features that are 0 
+#'   across a proportion of samples over 0.95. Default=TRUE
+#' @param zero.method can be any of NULL, prior, GBM or CZM. NULL will not 
+#'   impute or change 0 values, GBM (preferred) and CZM are from the 
+#'   zCompositions R package, and prior will simply add 0.5 to all counts.
 #' @param log is a logical. log transform the RLE or TMM outputs, default=FALSE
-#' @param group is a vector containing group information. Required fro RLE and 
-#'   TMM based normalizations.
+#' @param group is a vector containing group information. Required for clr, RLE, 
+#'   TMM, lvha, and iqlr based normalizations.
+#'
 #'
 #' @return Returns a list with the overlap between distances in the full and 
 #'   scaled composition in \code{ol} (expect 0), a yes/no binary decision in 
@@ -21,25 +25,24 @@
 #'
 #' @author Greg Gloor
 #'
-#' @export aIc.scale
-#'
 #' @examples
 #' library(ALDEx2)
 #' data(selex)
 #' group = c(rep('N', 7), rep('S', 7))
-#' x <- aIc.scale(selex, norm.method='prop')
+#' x <- aIc.scale(selex, group=group, norm.method='clr', zero.method='prior')
 #' plot(x$plot, main=x$main, ylab=x$ylab, xlab=x$xlab)
-aIc.scale <- function(data, norm.method='prop', zero.method='remove', log=FALSE, group=NULL){
+#' @export
+aIc.scale <- function(data, norm.method='prop', zero.remove=TRUE, zero.method=NULL, log=FALSE, group=NULL){
   
   # remove features with 0 counts across >95% of samples 
-  if(zero.method == 'remove'){
+  if(zero.remove == TRUE){
   	data <- remove_0(data)
   }
-  
-  if( min(data) == 0) {
-    data <- t(zCompositions::cmultRepl(t(data), method='GBM', output='p-counts', z.warning=.99, suppress.print=TRUE))
-  }  
-  
+  # zero subustitution
+  data <- zero.sub(data, zero.method)
+
+  # aIc.get.data() is the normalization function
+
   # scale by 5-fold change
   x.1 <- aIc.get.data(data, group=group, norm.method=norm.method, log=log)
   x.2 <- aIc.get.data(data * 5, group=group, norm.method=norm.method, log=log)
@@ -47,7 +50,7 @@ aIc.scale <- function(data, norm.method='prop', zero.method='remove', log=FALSE,
   dist.all <- dist(t(x.1))
   dist.scale <- dist(t(x.2))
   
-  plot.out <- hist(dist.all-dist.scale, breaks=99, plot=F) #, 
+  plot.out <- hist((dist.scale-dist.all)/dist.all * 100, breaks=99, plot=F) #, 
   xlab='difference between normal and scaled composition distance'
   ylab='Frequency'
 

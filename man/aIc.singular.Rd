@@ -10,7 +10,8 @@
 aIc.singular(
   data,
   norm.method = "prop",
-  zero.method = "remove",
+  zero.remove = TRUE,
+  zero.method = NULL,
   log = FALSE,
   group = NULL
 )
@@ -20,13 +21,17 @@ aIc.singular(
 
 \item{norm.method}{can be prop, clr, RLE, TMM, TMMwsp}
 
-\item{zero.method}{is a logical. Filter data to remove features that are 0
-across all samples. Default is TRUE}
+\item{zero.remove}{is a logical. Filter data to remove features that are 0 
+across a proportion of samples over 0.95. Default=TRUE}
+
+\item{zero.method}{can be any of NULL, prior, GBM or CZM. NULL will not 
+impute or change 0 values, GBM (preferred) and CZM are from the 
+zCompositions R package, and prior will simply add 0.5 to all counts.}
 
 \item{log}{is a logical. log transform the RLE or TMM outputs, default=FALSE}
 
-\item{group}{is a vector containing group information. Required fro RLE and 
-TMM based normalizations.}
+\item{group}{is a vector containing group information. Required for clr, RLE, 
+TMM, lvha, and iqlr based normalizations.}
 }
 \value{
 Returns a list with a yes/no binary decision in 
@@ -42,7 +47,7 @@ Returns a list with a yes/no binary decision in
 library(ALDEx2)
 data(selex)
 group = c(rep('N', 7), rep('S', 7))
-x <- aIc.singular(selex, norm.method='prop')
+x <- aIc.singular(selex, group=group, norm.method='clr', zero.method='prior')
 }
 \author{
 Greg Gloor

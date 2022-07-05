@@ -6,11 +6,14 @@
 #'
 #' @param data can be any dataframe or matrix with samples by column
 #' @param norm.method can be prop, clr, RLE, TMM, TMMwsp
-#' @param zero.method is a logical. Filter data to remove features that are 0
-#'   across all samples. Default is TRUE
+#' @param zero.remove is a logical. Filter data to remove features that are 0 
+#'   across a proportion of samples over 0.95. Default=TRUE
+#' @param zero.method can be any of NULL, prior, GBM or CZM. NULL will not 
+#'   impute or change 0 values, GBM (preferred) and CZM are from the 
+#'   zCompositions R package, and prior will simply add 0.5 to all counts.
 #' @param log is a logical. log transform the RLE or TMM outputs, default=FALSE
-#' @param group is a vector containing group information. Required fro RLE and 
-#'   TMM based normalizations.
+#' @param group is a vector containing group information. Required for clr, RLE, 
+#'   TMM, lvha, and iqlr based normalizations.
 #'
 #' @return Returns a list with the overlap between distances in the full and 
 #'   subcompositon in \code{ol} (expect 0), a yes/no binary decision in 
@@ -21,20 +24,24 @@
 #'
 #' @author Greg Gloor
 #'
-#' @export aIc.dominant
-#'
 #' @examples
 #' library(ALDEx2)
 #' data(selex)
 #' group = c(rep('N', 7), rep('S', 7))
-#' x <- aIc.dominant(selex, norm.method='prop')
+#' x <- aIc.dominant(selex, group=group, norm.method='clr', zero.method='prior')
 #' plot(x$plot, main=x$main, ylab=x$ylab, xlab=x$xlab)
-aIc.dominant <- function(data, norm.method='prop', zero.method='remove', log=FALSE, group=NULL){
+#' @export
+aIc.dominant <- function(data, norm.method='prop', zero.remove=TRUE, zero.method=NULL, 
+  log=FALSE, group=NULL){
   
   # remove features with 0 counts across >95% of samples 
-  if(zero.method == 'remove'){
+  if(zero.remove == TRUE){
   	data <- remove_0(data)
   }
+  # zero subustitution
+  data <- zero.sub(data, zero.method)
+
+  # aIc.get.data() is the normalization function
 
   size.sub <- floor(nrow(data)/2)
   data.sub <- data[1:size.sub,]
@@ -51,7 +58,7 @@ aIc.dominant <- function(data, norm.method='prop', zero.method='remove', log=FAL
   } else { 
     is.dom = 'Yes'
   }
-  plot.out <- hist(dist.all-dist.sub, breaks=99, plot=F) #, 
+  plot.out <- hist((dist.all-dist.sub)/dist.all * 100, breaks=99, plot=F) #, 
   main=paste('% of dominant distances ', 100 - round(ol, 3), sep="")
   xlab='difference between full and sub composition distance'
   ylab='Frequency'

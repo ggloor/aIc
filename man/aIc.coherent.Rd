@@ -2,15 +2,14 @@
 % Please edit documentation in R/aIc.R
 \name{aIc.coherent}
 \alias{aIc.coherent}
-\title{\code{aIc.coherent} am I coherent: calculates the subcompositional coherence of a sample in
-  a dataset for a given correction. This compares the correlation coefficients
-  of features in common of the full dataset and a subset of the dataset.
-  This is expected to be false in all compositional datasets and transforms.}
+\title{Calculate the subcompositional coherence of samples in
+a dataset for a given correction.}
 \usage{
 aIc.coherent(
   data,
   norm.method = "prop",
-  zero.method = "TRUE",
+  zero.remove = TRUE,
+  zero.method = NULL,
   log = FALSE,
   group = NULL
 )
@@ -18,34 +17,38 @@ aIc.coherent(
 \arguments{
 \item{data}{can be any dataframe or matrix with samples by column}
 
-\item{norm.method}{can be prop, clr, RLE, TMM, TMMwsp}
+\item{norm.method}{can be prop, clr, RLE, TMM, TMMwsp, lvha, iqlr}
 
-\item{zero.method}{is a logical. Filter data to remove features that are 0
-across all samples. Default is TRUE}
+\item{zero.remove}{is a logical. Filter data to remove features that are 0 
+across a proportion of samples over 0.95. Default=TRUE}
 
-\item{log}{is a logical. log transform the RLE or TMM outputs, default=FALSE}
+\item{zero.method}{can be any of NULL, prior, GBM or CZM. NULL will not 
+impute or change 0 values, GBM and CZM are from the 
+zCompositions R package, and prior will simply add 0.5 to all counts.}
 
-\item{group}{is a vector containing group information. Required fro RLE and 
-TMM based normalizations.}
+\item{log}{is a logical. log transform the prop, RLE or TMM outputs, default=FALSE}
+
+\item{group}{is a vector containing group information. Required for clr, RLE, 
+TMM, lvha, and iqlr based normalizations.}
 }
 \value{
 Returns a list with the correlation in \code{cor}, a yes/no binary 
-  decision in \code{is.coherent},  the x and y values for a scatterplot
-  of the correlations in the full and subcompositions, and the plot and axis
-  labels in \code{main} \code{xlab} and \code{ylab}.
+decision in \code{is.coherent},  the x and y values for a scatterplot
+of the correlations in the full and subcompositions, and the plot and axis
+labels in \code{main} \code{xlab} and \code{ylab}.
 }
 \description{
-\code{aIc.coherent} am I coherent: calculates the subcompositional coherence of a sample in
-  a dataset for a given correction. This compares the correlation coefficients
-  of features in common of the full dataset and a subset of the dataset.
-  This is expected to be false in all compositional datasets and transforms.
+`aIc.coherent` compares the correlation coefficients
+of features in common of the full dataset and a subset of the dataset.
+This is expected to be false for all compositional datasets and transforms.
 }
 \examples{
 library(ALDEx2)
 data(selex)
 group = c(rep('N', 7), rep('S', 7))
-x <- aIc.coherent(selex, norm.method='prop')
+x <- aIc.coherent(selex, group=group, norm.method='clr', zero.method='prior')
 plot(x$plot[,1], x$plot[,2], main=x$main, ylab=x$ylab, xlab=x$xlab)
+
 }
 \author{
 Greg Gloor

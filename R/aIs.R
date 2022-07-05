@@ -5,18 +5,19 @@
 #'
 #' @param data can be any dataframe or matrix with samples by column
 #' @param norm.method can be prop, clr, RLE, TMM, TMMwsp
-#' @param zero.method is a logical. Filter data to remove features that are 0
-#'   across all samples. Default is TRUE
+#' @param zero.remove is a logical. Filter data to remove features that are 0 
+#'   across a proportion of samples over 0.95. Default=TRUE
+#' @param zero.method can be any of NULL, prior, GBM or CZM. NULL will not 
+#'   impute or change 0 values, GBM (preferred) and CZM are from the 
+#'   zCompositions R package, and prior will simply add 0.5 to all counts.
 #' @param log is a logical. log transform the RLE or TMM outputs, default=FALSE
-#' @param group is a vector containing group information. Required fro RLE and 
-#'   TMM based normalizations.
+#' @param group is a vector containing group information. Required for clr, RLE, 
+#'   TMM, lvha, and iqlr based normalizations.
 #'
 #' @return Returns a list with a yes/no binary decision in 
 #'   \code{is.singular} and the covariance matrix in \code{cov.matrix}
 #'
 #' @author Greg Gloor
-#'
-#' @export aIc.singular
 #'
 #' @importFrom matrixcalc is.singular.matrix
 #'
@@ -24,14 +25,18 @@
 #' library(ALDEx2)
 #' data(selex)
 #' group = c(rep('N', 7), rep('S', 7))
-#' x <- aIc.singular(selex, norm.method='prop')
-
-aIc.singular <- function(data, norm.method='prop', zero.method='remove', log=FALSE, group=NULL){
+#' x <- aIc.singular(selex, group=group, norm.method='clr', zero.method='prior')
+#' @export
+aIc.singular <- function(data, norm.method='prop', zero.remove=TRUE, zero.method=NULL, log=FALSE, group=NULL){
   
   # remove features with 0 counts across >95% of samples 
-  if(zero.method == 'remove'){
+  if(zero.remove == TRUE){
   	data <- remove_0(data)
   }
+  # zero subustitution
+  data <- zero.sub(data, zero.method)
+
+  # aIc.get.data() is the normalization function
 
   x.1 <- aIc.get.data(data, group=group, norm.method=norm.method, log=log)
   
