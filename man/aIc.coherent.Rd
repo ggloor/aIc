@@ -8,7 +8,7 @@ a dataset for a given correction.}
 aIc.coherent(
   data,
   norm.method = "prop",
-  zero.remove = TRUE,
+  zero.remove = 0.95,
   zero.method = NULL,
   log = FALSE,
   group = NULL
@@ -19,8 +19,8 @@ aIc.coherent(
 
 \item{norm.method}{can be prop, clr, RLE, TMM, TMMwsp, lvha, iqlr}
 
-\item{zero.remove}{is a logical. Filter data to remove features that are 0 
-across a proportion of samples over 0.95. Default=TRUE}
+\item{zero.remove}{is a value. Filter data to remove features that are 0 
+across at least that proportion of samples: default 0.95}
 
 \item{zero.method}{can be any of NULL, prior, GBM or CZM. NULL will not 
 impute or change 0 values, GBM and CZM are from the 

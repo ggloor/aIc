@@ -7,6 +7,7 @@ Author: Greg Gloor
 Maintainer: Greg Gloor <ggloor@uwo.ca>
 Description: A set of tests for compositional pathologies. Tests for coherence of correlations with \code{aIc.coherent}, compositional dominance of distance with \code{aIc.dominant}, compositional perturbation invariance with \code{aIc.perturb}and singularity of the covariation matrix with \code{aIc.singular}. Currentlytests five data transformations: prop, clr, TMM, TMMwsp, and RLE.
 License: file LICENSE
+Encoding: UTF-8
 URL: https://github.com/ggloor/aIc
 BugReports: https://github.com/ggloor/aIc/issues
 RoxygenNote: 7.2.0

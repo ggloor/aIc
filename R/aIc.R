@@ -7,8 +7,8 @@
 #'
 #' @param data can be any dataframe or matrix with samples by column
 #' @param norm.method can be prop, clr, RLE, TMM, TMMwsp, lvha, iqlr
-#' @param zero.remove is a logical. Filter data to remove features that are 0 
-#' across a proportion of samples over 0.95. Default=TRUE
+#' @param zero.remove is a value. Filter data to remove features that are 0 
+#' across at least that proportion of samples: default 0.95
 #' @param zero.method can be any of NULL, prior, GBM or CZM. NULL will not 
 #' impute or change 0 values, GBM and CZM are from the 
 #' zCompositions R package, and prior will simply add 0.5 to all counts.
@@ -35,12 +35,11 @@
 #' plot(x$plot[,1], x$plot[,2], main=x$main, ylab=x$ylab, xlab=x$xlab)
 #'
 #' @export
-aIc.coherent <- function(data, norm.method="prop", zero.remove=TRUE, zero.method=NULL, log=FALSE, group=NULL){
+aIc.coherent <- function(data, norm.method="prop", zero.remove=0.95, zero.method=NULL, log=FALSE, group=NULL){
 
   # remove features with 0 counts across >95% of samples 
-  if(zero.remove == TRUE){
-  	data <- remove_0(data)
-  }
+  data <- remove_0(data, zero.remove)
+
   # zero subustitution
   data <- zero.sub(data, zero.method)
 

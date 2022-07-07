@@ -53,13 +53,11 @@ aIc.get.norm <- function(data, group, norm.method, log=FALSE, den.vec=NULL){
 		}
 	}
 	else {
-		if(log==F){
 	  	y <- edgeR::DGEList(counts=data, group=group)
 	  	y <- edgeR::calcNormFactors(y, method=norm.method)
+		if(log==F){
 			return(t(apply(y[[1]], 1, function(x) x * y[[2]]$norm.factors)))
 		} else {
-	  	y <- edgeR::DGEList(counts=data, group=group)
-	  	y <- edgeR::calcNormFactors(y, method=norm.method)
 			return(log(t(apply(y[[1]], 1, function(x) x * y[[2]]$norm.factors))))
 		}
 	}
@@ -67,12 +65,14 @@ aIc.get.norm <- function(data, group, norm.method, log=FALSE, den.vec=NULL){
 
 # removes 0 only rows
 # filters by at least 95% non-0 occurrence
-remove_0 <- function(data){
-    data <- data[rowSums(data) > 0,]
-    n0 <- apply(data, 1, function(x) length(which(x == 0)))
-    max.0 = ncol(data) *.95
-    return(data[n0 < max.0,])
-    
+remove_0 <- function(data, zero.remove){
+    if(!is.numeric(zero.remove)) { stop( 'enter a valid proportion for zero removal' ) }
+		if(zero.remove < 0 | zero.remove > 1){ stop( 'enter a valid proportion for zero removal' ) }
+
+		data <- data[rowSums(data) > 0,]
+		n0 <- apply(data, 1, function(x) length(which(x == 0)))
+		max.0 = ncol(data) * zero.remove
+		return(data[n0 < max.0,])      
 }
 
 # zero subsition, or not
