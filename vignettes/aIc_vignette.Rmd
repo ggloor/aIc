@@ -15,9 +15,9 @@ vignette: >
   %\VignetteEncoding{UTF-8}  
 ---
   
-# A simple test function to determine if the data have typical compositional data pathologies or are pathological in some other way.
+# A simple test function to determine if the data and transformations have compositional data pathologies or are pathological in some other way.
 
-The overall idea here is that pathologies in data have knock-on effects for analysis and one should  be aware of this prior to starting an analysis. In the context of high throughput sequencing, the same library can be sequenced on instruments that give vastly different numbers of output reads (from 1M to $\ge$ 2B reads). Thus, three important properties should be scale invariance, perturbation invariance, and sub-compositional dominance. 
+The overall idea here is that pathologies in data have knock-on effects for analysis and one should  be aware of this prior to starting an analysis. In the context of high throughput sequencing, the same library can be sequenced on instruments that give vastly different numbers of output reads (from 1M to $\ge$ 2B reads), and there can be unanticipated events that occur during sample processing that result in batch effects, etc. Thus, three important compositional properties should be scale invariance, perturbation invariance, and sub-compositional dominance [Aitchison 1982, 1984].
 
 One additional complication is the number and distribution of 0 values in the dataset. This depends on the makeup of the original samples, and on the sequencing depth. If the groups of samples have different background distributions (say different sets of genes expressed in each group, or different bacterial species in each group), then there will be asymmetric 0 distribution. If the samples are sequenced too shallowly, then features with low values will drop out and be represented as 0 values. If an asymmetric dataset is sequenced shallowly, then both pathologies will occur. The effect of adjusting the compositional basis (denominator) of the datasets can be explored using the iqlr and lvha approaches that attempt to identify unvarying denominators. 
 
