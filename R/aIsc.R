@@ -32,7 +32,7 @@
 #' x <- aIc.scale(selex, group=group, norm.method='clr', zero.method='prior')
 #' plot(x$plot, main=x$main, ylab=x$ylab, xlab=x$xlab)
 #' @export
-aIc.scale <- function(data, norm.method='prop', zero.remove=0.95, zero.method=NULL, log=FALSE, group=NULL){
+aIc.scale <- function(data, norm.method='prop', zero.remove=0.95, zero.method='prior', log=FALSE, group=NULL){
   
   # remove features with 0 counts across some proportion of samples 
   data <- remove_0(data, zero.remove)
@@ -42,24 +42,26 @@ aIc.scale <- function(data, norm.method='prop', zero.remove=0.95, zero.method=NU
 
   # aIc.get.data() is the normalization function
 
+  data.scale <- data * runif(ncol(data), min=4.99, max=5.01)
   # scale by 5-fold change
   x.1 <- aIc.get.data(data, group=group, norm.method=norm.method, log=log)
-  x.2 <- aIc.get.data(data * 5, group=group, norm.method=norm.method, log=log)
+  x.2 <- aIc.get.data(data.scale, group=group, norm.method=norm.method, log=log)
 
   dist.all <- dist(t(x.1))
   dist.scale <- dist(t(x.2))
   
-  plot.out <- hist((dist.scale-dist.all)/dist.all * 100, breaks=99, plot=F) #, 
+  plot.out <- hist((dist.all-dist.scale)/dist.all, breaks=99, plot=F) #, 
+  density.out <- density((dist.all-dist.scale)/dist.all) #, 
   xlab='difference between normal and scaled composition distance'
   ylab='Frequency'
 
     ol <- max(abs(plot.out$breaks))
-  if(ol > 2) { 
+  if(ol > 0.01) { 
     is.dom = 'No'
   } else { 
     is.dom = 'Yes'
   }
     main=paste('maximum absolute pertubation: ', round(ol,1),  sep="")
 
-  return( list(ol=ol,is.scale=is.dom, dist.all = dist.all, dist.scale = dist.scale, plot=plot.out, main=main, xlab=xlab, ylab=ylab))
+  return( list(ol=ol,is.scale=is.dom, dist.all = dist.all, dist.scale = dist.scale, plot=plot.out, density=density.out, main=main, xlab=xlab, ylab=ylab))
 }

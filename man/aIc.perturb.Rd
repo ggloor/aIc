@@ -12,7 +12,7 @@ aIc.perturb(
   data,
   norm.method = "prop",
   zero.remove = 0.95,
-  zero.method = NULL,
+  zero.method = "prior",
   log = FALSE,
   group = NULL
 )

@@ -31,7 +31,7 @@
 #' x <- aIc.dominant(selex, group=group, norm.method='clr', zero.method='prior')
 #' plot(x$plot, main=x$main, ylab=x$ylab, xlab=x$xlab)
 #' @export
-aIc.dominant <- function(data, norm.method='prop', zero.remove=0.95, zero.method=NULL, 
+aIc.dominant <- function(data, norm.method='prop', zero.remove=0.95, zero.method='prior', 
   log=FALSE, group=NULL){
   
   # remove features with 0 counts across >95% of samples 
@@ -51,16 +51,18 @@ aIc.dominant <- function(data, norm.method='prop', zero.remove=0.95, zero.method
   dist.all <- dist(t(x.1))
   dist.sub <- dist(t(x.2))
   
-  ol <- 100 * min(c(sum(dist.all-dist.sub < 0)/length(dist.sub),sum(dist.all-dist.sub > 0)/length(dist.sub) ))
+  ol <- min(c(sum(dist.all-dist.sub < 0)/length(dist.sub),sum(dist.all-dist.sub > 0)/length(dist.sub) ))
   if(ol > 0) { 
     is.dom = 'No'
+    main=paste('Proportion of dominant distances ', round(ol, 3), sep="")
   } else { 
     is.dom = 'Yes'
+    main=paste('Proportion of dominant distances ', 1 - round(ol, 3), sep="")
   }
-  plot.out <- hist((dist.all-dist.sub)/dist.all * 100, breaks=99, plot=F) #, 
-  main=paste('% of dominant distances ', 100 - round(ol, 3), sep="")
-  xlab='difference between full and sub composition distance'
+  plot.out <- hist((dist.all-dist.sub)/dist.all, breaks=99, plot=F) #, 
+  density.out <- density((dist.all-dist.sub)/dist.all) #, 
+  xlab='Relative distance between full and sub composition '
   ylab='Frequency'
 
-  return( list(ol=ol,is.dominant=is.dom, dist.all = dist.all, dist.sub = dist.sub, plot=plot.out, main=main, xlab=xlab, ylab=ylab))
+  return( list(ol=ol,is.dominant=is.dom, dist.all = dist.all, dist.sub = dist.sub, plot=plot.out, density=density.out, main=main, xlab=xlab, ylab=ylab))
 }

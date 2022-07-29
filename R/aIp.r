@@ -33,7 +33,7 @@
 #' x <- aIc.perturb(selex, group=group, norm.method='clr', zero.method='prior')
 #' plot(x$plot, main=x$main, ylab=x$ylab, xlab=x$xlab)
 #' @export
-aIc.perturb <- function(data, norm.method='prop', zero.remove=0.95, zero.method=NULL, log=FALSE, group=NULL){
+aIc.perturb <- function(data, norm.method='prop', zero.remove=0.95, zero.method='prior', log=FALSE, group=NULL){
   
   # remove features with 0 counts across >95% of samples 
   data <- remove_0(data, zero.remove)
@@ -48,22 +48,23 @@ aIc.perturb <- function(data, norm.method='prop', zero.remove=0.95, zero.method=
   data.perturb <- data * perturb
     
   x.1 <- aIc.get.data(data, group=group, norm.method=norm.method, log=log)
-  x.2 <- aIc.get.data(data.perturb, group=group, norm.method=norm.method)
+  x.2 <- aIc.get.data(data.perturb, group=group, norm.method=norm.method, log=log)
 
   dist.all <- dist(t(x.1))
   dist.perturb <- dist(t(x.2))
   
-    plot.out <- hist((dist.all-dist.perturb)/dist.all *100, breaks=99, plot=F) 
-    xlab='% deviance from no perturbation'
+    plot.out <- hist((dist.all-dist.perturb)/dist.all, breaks=99, plot=F) 
+    density.out <- density((dist.all-dist.perturb)/dist.all) 
+    xlab='Proportion deviance from no perturbation'
     ylab='Frequency'
     
     ol <- max(abs(plot.out$breaks))
-  if(ol > 2) { 
+  if(ol > 0.01) { 
     is.dom = 'No'
   } else { 
     is.dom = 'Yes'
   }
     main=paste('maximum absolute pertubation: ', round(ol,1),  sep="")
 
-  return( list(ol=ol,is.perturb=is.dom, dist.all = dist.all, dist.perturb = dist.perturb, plot=plot.out,main=main, xlab=xlab, ylab=ylab))
+  return( list(ol=ol,is.perturb=is.dom, dist.all = dist.all, dist.perturb = dist.perturb, plot=plot.out, density=density.out, main=main, xlab=xlab, ylab=ylab))
 }

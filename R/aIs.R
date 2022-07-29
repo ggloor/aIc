@@ -20,6 +20,7 @@
 #' @author Greg Gloor
 #'
 #' @importFrom matrixcalc is.singular.matrix
+#' @importFrom stats density
 #'
 #' @examples
 #' library(ALDEx2)
@@ -27,7 +28,7 @@
 #' group = c(rep('N', 7), rep('S', 7))
 #' x <- aIc.singular(selex, group=group, norm.method='clr', zero.method='prior')
 #' @export
-aIc.singular <- function(data, norm.method='prop', zero.remove=0.95, zero.method=NULL, log=FALSE, group=NULL){
+aIc.singular <- function(data, norm.method='prop', zero.remove=0.95, zero.method='prior', log=FALSE, group=NULL){
   
   # remove features with 0 counts across >95% of samples 
   	data <- remove_0(data, zero.remove)

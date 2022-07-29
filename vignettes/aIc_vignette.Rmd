@@ -15,25 +15,37 @@ vignette: >
   %\VignetteEncoding{UTF-8}  
 ---
   
-# A simple test function to determine if the data and transformations have compositional data pathologies or are pathological in some other way.
+# aIc and amIcomp implement simple test functions to determine if a particular dataset and transformation exhibit data pathologies that we can understand and control for. Since 'all models are wrong'[Box:1976] it is important to know at the outset what is wrong, why it is wrong, and how that wrongness would hinder general interpretability in some way. 
 
-The overall idea here is that pathologies in data have knock-on effects for analysis and one should  be aware of this prior to starting an analysis. In the context of high throughput sequencing, the same library can be sequenced on instruments that give vastly different numbers of output reads (from 1M to $\ge$ 2B reads), and there can be unanticipated events that occur during sample processing that result in batch effects, etc. Thus, three important compositional properties should be scale invariance, perturbation invariance, and sub-compositional dominance [Aitchison 1982, 1984].
+To answer the question, posed by the name of the package, "am I compositional?" the answer is always yes! However, a more nuanced answer is that the effect of compositional limitations on the analysis can be large or small depending on the dataset, the normalization and the analysis conducted.
 
-One additional complication is the number and distribution of 0 values in the dataset. This depends on the makeup of the original samples, and on the sequencing depth. If the groups of samples have different background distributions (say different sets of genes expressed in each group, or different bacterial species in each group), then there will be asymmetric 0 distribution. If the samples are sequenced too shallowly, then features with low values will drop out and be represented as 0 values. If an asymmetric dataset is sequenced shallowly, then both pathologies will occur. The effect of adjusting the compositional basis (denominator) of the datasets can be explored using the iqlr and lvha approaches that attempt to identify unvarying denominators. 
 
-These, and others, are outlined below.
+Data normalization is an accepted preprocessing step used to provide desirable statistical characteristics so that the data can be analyzed using standard approaches. These normalizations are usually chosen to address the mean-variance relationship so that differential abundance or linear models can be used to assess how the features differ between groups. However, the effect on other properties of the data are usually not explored when the transformed data are  used for dimension reduction and ordination, clustering, feature selection and network analysis. All of these downstream methods assume that distances and correlations between features (anything that has a unique molecular identifier such as a gene, protein, function, operational taxonomic unit, etc) is relatively unaffected by the transformation, although this is generally not examined.
+
+Pathologies in data have knock-on effects for analysis and that one should  be aware of this prior to starting an analysis. If the data are behaving as true counts, then our inferences should not change with these alterations. However, it was recognized early on that 'normalization' was a key aspect of reproducible analyses. This led to a profusion of normalizations being used during the analysis of high throughput sequencing [Dillies:2013] and several attempts to unify normalization across separate domains of research that all used the same technology platforms [McMurdie:2014, Fernandes:2014]. The realization that HTS instruments delivered multivariate count-compositional data [Friedman:2012,fernandes:2013,Lovell:2015] suggested a way forward. However, there is still considerable uncertainty about the best approaches since non-compositional approaches often appear to give reasonable answers in some contexts.
+
+Therefore, the purpose of this tool is to allow the user to investigate if a particular combination of normalization, dataset and analysis will allow robust interpretations for analyses other than differential abundance or if a different normalization would be better. 
+
+One final complication is the number and distribution of 0 values in the dataset. This depends on the makeup of the original samples, and on the sequencing depth. If the groups of samples have different background distributions (say different sets of genes expressed in each group, or different bacterial species in each group), then there will be an asymmetric 0 distribution. If the samples are sequenced too shallowly, then features with low values will drop out and be represented as 0 values. If an asymmetric dataset is sequenced shallowly, then both pathologies will occur. The effect of adjusting the compositional basis (denominator) of the datasets can be explored using the iqlr and lvha approaches that attempt to identify unvarying denominators[Wu2021]. 
+
 
 ## List of common data pathologies:
 
-1) Singular covariance matrix: This imposes analysis constraints on the data. In practice almost all HTS datasets are singular because they are high dimensional: there are more samples than features. However, even non-singular starting matrices are converted to singular matrices by the clr and common transforms. This property is thus a given for all datasets, but is included for completeness.
+1) Singular covariance matrix: This imposes analysis constraints on the data especially for ordination and clustering. In practice almost all HTS datasets are singular because they are high dimensional: there are more samples than features, although single-cell transcriptome analysis has a chance of being non-singular after filtering. However, even non-singular starting matrices are converted to singular matrices by many common transforms. This property should be assumed for all datasets, but is included for completeness.
 
-2) Sub-compositional coherence: This means that correlations between features are not identical for the full dataset and any feature subset of that dataset. This is not preserved for any transformation tested here and these papers will get you started^[Lovell et al. (2015) https://doi.org/10.1371/journal.pcbi.1004075, Quinn et al. (2017) https://doi.org/10.1038/s41598-017-16520-0, Egozcue et al. https://doi.org/10.17713/ajs.v47i1.689]. Sub-compositional coherence is possible with isometric log-ratios but these are not instantiated in differential abundance packages.
+2) Scale invariance:  In the context of high throughput sequencing (HTS), the same library can be sequenced on instruments that give vastly different numbers of output reads (from 1M to $\ge$ 2B reads), and there can be unanticipated events that occur during sample processing that result in batch effects, etc. This could result in datasets with vastly different numbers of reads per sample and the associated gain or loss of counts in low-count features (censoring), or systemic deviations between features. This 'library size' problem is one of the main reasons for data normalization, as without it, ordination often shows that the major contributor to the variance in the data is the number of reads per sample rather than the biological effect being examined. This property means that changing the scale of the data --- multiplying or dividing by and arbitrary value --- should have no or only a minimal effect on the distances between samples.
 
-3) Sub-compositional distance dominance: This property means that any feature subset of the data should have smaller distances between samples than the full dataset (or any superset of the subset). This property should be met by any compositionally appropriate transform which converts features to be linearly different (as the centred log-ratio transform does).
+3) Sub-compositional distance dominance: This property means that any  subset of the data should have smaller distances between samples than the full dataset (or any superset of the subset). This property should be met by any compositionally appropriate transform which converts features to be linearly different (as the centred log-ratio transform does).
 
-4) Scale invariance: This property means that changing the scale of the data --- multiplying or dividing by and arbitrary value --- should have no or only a minimal effect on the distances between samples.
+4) Perturbation invariance: This property means that simple perturbations of the data or a subset of the data should have minimal effects on the outcome. In particular, perturbations should have minimal effects on distances between samples. This is because in a composition, a perturbation, a multiplicative change in the feature, simply moves the dataset from one place to another in the sample space. 
 
-5) Perturbation invariance: This property means that simple perturbations of the data or a subset of the data should have minimal effects on the outcome. In particular, should have minimal effects on distances between samples. This is because in a composition, a perturbation, a multiplicative change in the feature, simply moves the dataset from one place to another in the sample space. 
+5) Sub-compositional coherence: This means that correlations between features are not identical for the full dataset and any feature subset of that dataset. This is not preserved for any transformation tested here and these papers will get you started^[Lovell et al. (2015) https://doi.org/10.1371/journal.pcbi.1004075, Quinn et al. (2017) https://doi.org/10.1038/s41598-017-16520-0, Egozcue et al. https://doi.org/10.17713/ajs.v47i1.689]. Sub-compositional coherence is possible with isometric log-ratios but these are not instantiated in differential abundance packages.
+
+## Properties of datasets
+
+High throughput sequencing datasets share study-design specific properties, as shown in Figure 1 which plots the relative abundance vs. dispersion for several different types of datasets. We can see that transcriptome datasets, whether bulk or single-cell have a tight relationship, and that all other types of data have a less predictable type of relationship. Note that the in-vitro selection dataset (selex) has a nearly independent relationship between these two parameters. For this reason, it can be difficult to predict how different normalizations will behave and hence the need for this tool.
+
+# Example functions
 
 ```{r, echo=F, message=F, warning=F}
 
@@ -45,9 +57,9 @@ data(selex)
 group <- c(rep('n',7), rep('s',7))
 ```
 
-The selex dataset^[McMurrough et al (2018) https://doi.org/10.1093/nar/gky976] is a favourite of mine to use because we have a standard of truth, and because it behaves so badly with so many tools. It is included as the test dataset in the ALDEx2 R package^[Fernandes et al (2014) https://doi.org/10.1186/2049-2618-2-15] and can be accessed there. 
+The selex dataset^[McMurrough et al (2018) https://doi.org/10.1093/nar/gky976] is a useful example because we have a standard of truth, and because it behaves so badly with so many tools since it does not have a predictable relative abundance-variance relationship. It is included as the test dataset in the ALDEx2 R package^[Fernandes et al (2014) https://doi.org/10.1186/2049-2618-2-15] and can be accessed there. 
 
-# Sub-compositions and correlation (coherence)
+## Sub-compositions and correlation (coherence)
 
 The first test is for correlation in a full dataset and a subset of the data and if different the data are compostions and need to be treated as such. This is a correlation coherence test. Correlations in compositional data are not stable to subsetting and any transformation that is not coherent should not be trusted to build correlation networks unless one is using compositionally appropriate methods.
 
@@ -57,24 +69,24 @@ In other words, correlations change as different filtering and pre-processing st
 
 
 ```{r, echo=T}
-test.cor.clr <- aIc.coherent(selex, group=group, zero.method='GBM', 
-  norm.method='clr', log=F)
-test.cor.TMM <- aIc.coherent(selex, group=group, zero.method='GBM', 
-  norm.method='TMM', log=T)
+test.cor.clr <- aIc.coherent(selex, group=group, zero.method='prior', 
+  norm.method='clr', log=F, cor.test='spearman')
+test.cor.TMM <- aIc.coherent(selex, group=group, zero.method='prior', 
+  norm.method='TMM', log=F, cor.test='spearman')
 test.cor.clr$is.coherent
 test.cor.TMM$is.coherent
+
+# plot the results
 par(mfrow=c(1,2))
-plot(test.cor.clr$plot)
-abline(0,1, col='red', lty=2, lwd=3)
-plot(test.cor.TMM$plot)
-abline(0,1, col='red', lty=2, lwd=3)
+aIc.plot(test.cor.clr)
+aIc.plot(test.cor.TMM)
 ```
 
-Thus, we see that under the clr and TMM, features in common between sub-compositions and the full composition display variable correlations. 
+Thus, we see that under the clr and TMM, features in common between sub-compositions and the full composition display variable correlations with the clr correlation displaying a wider range of correlations than the log of TMM. What we learn from this is that the correlation we observe is affected by the choice of features we include in the dataset and so any correlation network will not be robust.
 
-# Sub-compositions and distance (dominance)
+## Sub-compositions and distance (dominance)
 
-The second test is sub-compositional dominance. That is, the subset should always have an equal or smaller difference between samples than the full (non-subsetted) dataset. We will use the same dataset and transforms. 
+The second test is sub-compositional dominance. That is, the subset data should always have an equal or smaller difference between samples than the full (non-subsetted) dataset. We will use the same dataset and transforms. 
 
 
 ```{r, echo=T}
@@ -85,18 +97,18 @@ test.dom.TMM <- aIc.dominant(selex, group=group, zero.method='prior',
   norm.method='TMM', log=T)
 test.dom.clr$is.dominant
 test.dom.TMM$is.dominant
+
+# plot the results
 par(mfrow=c(1,2))
-plot(test.dom.clr$plot)
-abline(v=0, col='red', lty=2, lwd=3)
-plot(test.dom.TMM$plot)
-abline(v=0, col='red', lty=2, lwd=3)
+aIc.plot(test.dom.clr)
+aIc.plot(test.dom.TMM)
 
 ```
 
-Here both transforms are distance dominant and the x-axis is the proportion of divergenece from the distances in the full composition. Note however the large and bimodal distance dominant property of the log(TMM) transformation. 
+Here both transforms are distance dominant and the x-axis is the proportion of divergenece from the distances in the full composition. Both the clr (left) and log TMM distances display a bimodal distribution that is entirely to the right of the red cutoff line of dominance.
 
 
-# Testing for scale invariance
+## Testing for scale invariance
 
 The third test is scale invariance. That is, the data should have the same distance between samples when the scale (sequencing depth) changes. We will use the same dataset and transforms
 
@@ -110,17 +122,15 @@ test.scale.TMM <- aIc.scale(selex, group=group, zero.method='GBM',
 test.scale.clr$is.scale
 test.scale.TMM$is.scale
 par(mfrow=c(1,2))
-plot(test.scale.clr$plot)
-abline(v=0, col='red', lty=2, lwd=3)
-plot(test.scale.TMM$plot)
-abline(v=0, col='red', lty=2, lwd=3)
+aIc.plot(test.scale.clr)
+aIc.plot(test.scale.TMM)
 ```
 
-Here neither transforms is scale invariant, and the x-axis is the proportion of divergenece from the distances in the unscaled composition. Note again the large and bimodal distance divergence of the log(TMM) transformation. 
+Here both transforms are scale invariant within a tolerance of plus or minus 1%. The x-axis is the proportion of divergenece from the distances in the unscaled composition and the red box indicates the limits of the tolerance. 
 
-# Testing for perturbation invariance
+## Testing for perturbation invariance
 
-The fourth test is perturbation invariance. That is, the data should have the same distance between samples when one or a few of the features have some perturbation. In the context of a HTS experiment, this could correspond to a systematic difference between feature capture  or feature sequencing probability for a subset of the features.
+The fourth test is perturbation invariance. That is, the data should have the same distance between samples when one or a few of the features have some perturbation. In the context of a HTS experiment, this could correspond to a systematic difference between the probability of capture of a feature  or the probability of sequencing for a subset of the features.
 
 
 ```{r, echo=T}
@@ -128,19 +138,32 @@ The fourth test is perturbation invariance. That is, the data should have the sa
 test.perturb.clr <- aIc.perturb(selex, group=group, zero.method='prior', 
   norm.method='clr', log=F)
 test.perturb.TMM <- aIc.perturb(selex, group=group, zero.method='prior', 
-  norm.method='TMM', log=T)
+  norm.method='RLE', log=F)
 test.perturb.clr$is.perturb
 test.perturb.TMM$is.perturb
 par(mfrow=c(1,2))
-plot(test.perturb.clr$plot)
-abline(v=0, col='red', lty=2, lwd=3)
-plot(test.perturb.TMM$plot)
-abline(v=0, col='red', lty=2, lwd=3)
+aIc.plot(test.perturb.clr)
+aIc.plot(test.perturb.TMM)
 
 ```
 
-Here neither transforms is scale invariant, and the x-axis is the proportion of divergenece from the distances in the unscaled composition. However, note that the clr transform has less than 1% divergence after perturbation while the log(TMM) is again bimodal and large---ranging to over 12% divergence in distance. Here the clr is the obviously better choice. 
+Here the clr is perturbation invariant within limits, while the TMM is not. The x-axis is the proportion of divergenece from the distances in the unperturbed composition. Here the clr is the obviously better choice as systematic differences in collection of features has a substantially smaller effect on the distances between samples than does the TMM normalization. 
 
+# Choosing parameters
+
+The tests have common and specific parameters. Common parameters are:
+
+- `norm.method` the normalization method. Other normalization methods will be incorporated on request, but they should be substantially different than the ones given here. For example, the RPKM, FPKM, TPM normalizations are simply scaled versions of proportions and are expected to behave substantially the same as does `prop`.
+
+- `zero.remove` the maximum occurrence of zeros across all samples for a feature. Features with 0 greater than this value will be removed prior to analysis. This is a very conservative filter compared to common practice.
+
+- `zero.method` the 0 replacement strategy. By default we add a prior of 0.5 counts to every value in the data like in the `ALDEx2` package. An alternative is to use the `GBM` method of zero imputation that is instantiated in the `zCompositions` package or to not replace 0s although this causes any logarithm-dependent method to fail. Be cautious with the `GBM` method as it can take some time to run with very large datasets (single cell).
+
+- `log` take the logarithm of non-logarithmic transforms. Ignored for clr, iqlr and lvha normalization methods since these are log-ratios.
+
+- `group` a group vector since many of the normalizations need group information.
+
+- the `aIc.coherent` function takes an additional argument to determine the correlation measure and pearson, spearman or kendall are available options.
 
 # Conclusion
 

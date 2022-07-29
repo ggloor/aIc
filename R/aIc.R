@@ -14,7 +14,7 @@
 #' zCompositions R package, and prior will simply add 0.5 to all counts.
 #' @param log is a logical. log transform the prop, RLE or TMM outputs, default=FALSE
 #' @param group is a vector containing group information. Required for clr, RLE, 
-#' TMM, lvha, and iqlr based normalizations.
+#' @param cor.test is either the pearson or spearman method (default)
 #'
 #' @return Returns a list with the correlation in \code{cor}, a yes/no binary 
 #' decision in \code{is.coherent},  the x and y values for a scatterplot
@@ -35,7 +35,7 @@
 #' plot(x$plot[,1], x$plot[,2], main=x$main, ylab=x$ylab, xlab=x$xlab)
 #'
 #' @export
-aIc.coherent <- function(data, norm.method="prop", zero.remove=0.95, zero.method=NULL, log=FALSE, group=NULL){
+aIc.coherent <- function(data, norm.method="prop", zero.remove=0.95, zero.method='prior', log=FALSE, group=NULL, cor.test='spearman'){
 
   # remove features with 0 counts across >95% of samples 
   data <- remove_0(data, zero.remove)
@@ -51,8 +51,8 @@ aIc.coherent <- function(data, norm.method="prop", zero.remove=0.95, zero.method
   x.1 <- aIc.get.data(data, group=group, norm.method=norm.method, log=log)
   x.2 <- aIc.get.data(data.sub, group=group, norm.method=norm.method, log=log)
   
-  c.x1 <- cor(t(x.1))
-  c.x2 <- cor(t(x.2))
+  c.x1 <- cor(t(x.1), method=cor.test)
+  c.x2 <- cor(t(x.2), method=cor.test)
   
   v.x1 <- c(c.x1[1:size.sub,1:size.sub])
   v.x2 <- c(c.x2)

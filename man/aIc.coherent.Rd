@@ -9,9 +9,10 @@ aIc.coherent(
   data,
   norm.method = "prop",
   zero.remove = 0.95,
-  zero.method = NULL,
+  zero.method = "prior",
   log = FALSE,
-  group = NULL
+  group = NULL,
+  cor.test = "spearman"
 )
 }
 \arguments{
@@ -28,8 +29,9 @@ zCompositions R package, and prior will simply add 0.5 to all counts.}
 
 \item{log}{is a logical. log transform the prop, RLE or TMM outputs, default=FALSE}
 
-\item{group}{is a vector containing group information. Required for clr, RLE, 
-TMM, lvha, and iqlr based normalizations.}
+\item{group}{is a vector containing group information. Required for clr, RLE,}
+
+\item{cor.test}{is either the pearson or spearman method (default)}
 }
 \value{
 Returns a list with the correlation in \code{cor}, a yes/no binary 
