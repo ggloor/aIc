@@ -55,7 +55,8 @@ aIc.perturb <- function(data, norm.method='prop', zero.remove=0.95, zero.method=
   
     plot.out <- hist((dist.all-dist.perturb)/dist.all, breaks=99, plot=F) 
     density.out <- density((dist.all-dist.perturb)/dist.all) 
-    xlab='Proportion deviance from no perturbation'
+    xlab='(ref - perturb)/ref'
+          
     ylab='Frequency'
     
     ol <- max(abs(plot.out$breaks))

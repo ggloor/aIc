@@ -10,7 +10,7 @@ License: file LICENSE
 Encoding: UTF-8
 URL: https://github.com/ggloor/aIc
 BugReports: https://github.com/ggloor/aIc/issues
-RoxygenNote: 7.2.0
+RoxygenNote: 7.2.1
 VignetteBuilder: knitr
 Imports:
   edgeR,
@@ -21,3 +21,4 @@ Suggests:
   BiocStyle, 
   knitr, 
   rmarkdown
+Depends: R (>= 3.5.0)

@@ -39,7 +39,7 @@ One final complication is the number and distribution of 0 values in the dataset
 
 4) Perturbation invariance: This property means that simple perturbations of the data or a subset of the data should have minimal effects on the outcome. In particular, perturbations should have minimal effects on distances between samples. This is because in a composition, a perturbation, a multiplicative change in the feature, simply moves the dataset from one place to another in the sample space. 
 
-5) Sub-compositional coherence: This means that correlations between features are not identical for the full dataset and any feature subset of that dataset. This is not preserved for any transformation tested here and these papers will get you started^[Lovell et al. (2015) https://doi.org/10.1371/journal.pcbi.1004075, Quinn et al. (2017) https://doi.org/10.1038/s41598-017-16520-0, Egozcue et al. https://doi.org/10.17713/ajs.v47i1.689]. Sub-compositional coherence is possible with isometric log-ratios but these are not instantiated in differential abundance packages.
+5) Correlation coherence: This means that correlations between features are not identical for the full dataset and any feature subset of that dataset. This is not preserved for any transformation tested here and these papers will get you started^[Lovell et al. (2015) https://doi.org/10.1371/journal.pcbi.1004075, Quinn et al. (2017) https://doi.org/10.1038/s41598-017-16520-0, Egozcue et al. https://doi.org/10.17713/ajs.v47i1.689, erb:2020]. Sub-compositional correlation coherence is possible with isometric log-ratios but these are not instantiated in differential abundance packages.
 
 ## Properties of datasets
 
