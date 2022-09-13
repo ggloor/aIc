@@ -26,6 +26,7 @@
 #' @importFrom grDevices rgb
 #' @importFrom graphics abline hist
 #' @importFrom stats cor cov dist runif
+#' @importFrom zCompositions cmultRepl lrSVD
 #' @import ALDEx2 
 #' @examples
 #' library(ALDEx2)

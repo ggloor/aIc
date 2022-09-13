@@ -83,9 +83,13 @@ zero.sub <- function(data, zero.method){
 	} else if( zero.method=='GBM' & min(data) == 0) {
     data <- t(zCompositions::cmultRepl(t(data), method='GBM', output='p-counts', 
       z.warning=.99, suppress.print=TRUE))
-  } else if( zero.method=='Z' & min(data) == 0) {
+  } else if( zero.method=='CZM' & min(data) == 0) {
     data <- t(zCompositions::cmultRepl(t(data), method='CZM', output='p-counts', 
       z.warning=0.65, suppress.print=TRUE))
+  }else if( zero.method=='lrSVD' & min(data) == 0) {
+  	dl <- rep(0.5, nrow(data))
+    data <- t(zCompositions::lrSVD(t(data), label=0, dl=dl, 
+      z.warning=0.85))
   } else if( zero.method=='prior' & min(data) == 0) {
 		data <- data + 0.5
   }

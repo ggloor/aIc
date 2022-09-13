@@ -24,8 +24,6 @@
 #'
 #' @author Greg Gloor
 #'
-#' @importFrom zCompositions cmultRepl
-#'
 #' @examples
 #' library(ALDEx2)
 #' data(selex)
