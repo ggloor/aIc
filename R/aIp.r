@@ -63,7 +63,7 @@ aIc.perturb <- function(data, norm.method='prop', zero.remove=0.95, zero.method=
   } else { 
     is.dom = 'Yes'
   }
-    main=paste('maximum absolute pertubation: ', round(ol,1),  sep="")
+    main=paste('maximum fold change: ', round(ol,1),  sep="")
 
   return( list(ol=ol,is.perturb=is.dom, dist.all = dist.all, dist.perturb = dist.perturb, plot=plot.out, density=density.out, main=main, xlab=xlab, ylab=ylab))
 }

@@ -51,13 +51,15 @@ aIc.dominant <- function(data, norm.method='prop', zero.remove=0.95, zero.method
   dist.all <- dist(t(x.1))
   dist.sub <- dist(t(x.2))
   
-  ol <- min(c(sum(dist.all-dist.sub < 0)/length(dist.sub),sum(dist.all-dist.sub > 0)/length(dist.sub) ))
-  if(ol > 0) { 
+#  ol <- min(c(sum(dist.all-dist.sub < 0)/length(dist.sub),sum(dist.all-dist.sub > 0)/length(dist.sub) ))
+  ol <- 1 - (sum((dist.all-dist.sub)/dist.all <0) / length(dist.all))
+  
+  if(ol < 1) { 
     is.dom = 'No'
     main=paste('Proportion of dominant distances ', round(ol, 3), sep="")
   } else { 
     is.dom = 'Yes'
-    main=paste('Proportion of dominant distances ', 1 - round(ol, 3), sep="")
+    main=paste('Proportion of dominant distances ', round(ol, 3), sep="")
   }
   plot.out <- hist((dist.all-dist.sub)/dist.all, breaks=99, plot=F) #, 
   density.out <- density((dist.all-dist.sub)/dist.all) #, 

@@ -61,7 +61,7 @@ aIc.scale <- function(data, norm.method='prop', zero.remove=0.95, zero.method='p
   } else { 
     is.dom = 'Yes'
   }
-    main=paste('maximum absolute pertubation: ', round(ol,1),  sep="")
+    main=paste('maximum fold change: ', round(ol,1),  sep="")
 
   return( list(ol=ol,is.scale=is.dom, dist.all = dist.all, dist.scale = dist.scale, plot=plot.out, density=density.out, main=main, xlab=xlab, ylab=ylab))
 }
