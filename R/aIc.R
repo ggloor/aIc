@@ -27,6 +27,7 @@
 #' @importFrom graphics abline hist
 #' @importFrom stats cor cov dist runif
 #' @importFrom zCompositions cmultRepl lrSVD
+#' @importFrom vegan vegdist
 #' @import ALDEx2 
 #' @examples
 #' library(ALDEx2)

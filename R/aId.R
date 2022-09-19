@@ -12,6 +12,8 @@
 #'   impute or change 0 values, GBM (preferred) and CZM are from the 
 #'   zCompositions R package, and prior will simply add 0.5 to all counts.
 #' @param log is a logical. log transform the RLE or TMM outputs, default=FALSE
+#' @param distance can be euclidian, bray, or jaccard. euclidian on log-ratio
+#'   transformed data is the same as the Aitchison distance. default=euclidian
 #' @param group is a vector containing group information. Required for clr, RLE, 
 #'   TMM, lvha, and iqlr based normalizations.
 #'
@@ -28,16 +30,16 @@
 #' library(ALDEx2)
 #' data(selex)
 #' group = c(rep('N', 7), rep('S', 7))
-#' x <- aIc.dominant(selex, group=group, norm.method='clr', zero.method='prior')
+#' x <- aIc.dominant(selex, group=group, norm.method='clr', distance='euclidian', zero.method='prior')
 #' plot(x$plot, main=x$main, ylab=x$ylab, xlab=x$xlab)
 #' @export
 aIc.dominant <- function(data, norm.method='prop', zero.remove=0.95, zero.method='prior', 
-  log=FALSE, group=NULL){
+  log=FALSE, distance='euclidian', group=NULL){
   
   # remove features with 0 counts across >95% of samples 
   data <- remove_0(data, zero.remove)
   
-  # zero subustitution
+  # zero substitution
   data <- zero.sub(data, zero.method)
 
   # aIc.get.data() is the normalization function
@@ -48,9 +50,9 @@ aIc.dominant <- function(data, norm.method='prop', zero.remove=0.95, zero.method
   x.1 <- aIc.get.data(data, group=group, norm.method=norm.method, log=log)
   x.2 <- aIc.get.data(data.sub, group=group, norm.method=norm.method, log=log)
 
-  dist.all <- dist(t(x.1))
-  dist.sub <- dist(t(x.2))
-  
+  dist.all <- aIc.get.dist(x.1, distance)
+  dist.sub <- aIc.get.dist(x.2, distance)
+    
 #  ol <- min(c(sum(dist.all-dist.sub < 0)/length(dist.sub),sum(dist.all-dist.sub > 0)/length(dist.sub) ))
   ol <- 1 - (sum((dist.all-dist.sub)/dist.all <0) / length(dist.all))
   

@@ -13,6 +13,7 @@ aIc.perturb(
   norm.method = "prop",
   zero.remove = 0.95,
   zero.method = "prior",
+  distance = "euclidian",
   log = FALSE,
   group = NULL
 )
@@ -28,6 +29,9 @@ across at least that proportion of samples: default 0.95}
 \item{zero.method}{can be any of NULL, prior, GBM or CZM. NULL will not 
 impute or change 0 values, GBM (preferred) and CZM are from the 
 zCompositions R package, and prior will simply add 0.5 to all counts.}
+
+\item{distance}{can be euclidian, bray, or jaccard. euclidian on log-ratio
+transformed data is the same as the Aitchison distance. default=euclidian}
 
 \item{log}{is a logical. log transform the RLE or TMM outputs, default=FALSE}
 
@@ -53,7 +57,7 @@ Returns a list with the maximum proportional perturbation in \code{ol}
 library(ALDEx2)
 data(selex)
 group = c(rep('N', 7), rep('S', 7))
-x <- aIc.perturb(selex, group=group, norm.method='clr', zero.method='prior')
+x <- aIc.perturb(selex, group=group, norm.method='clr', distance='euclidian', zero.method='prior')
 plot(x$plot, main=x$main, ylab=x$ylab, xlab=x$xlab)
 }
 \author{

@@ -11,6 +11,8 @@
 #' @param zero.method can be any of NULL, prior, GBM or CZM. NULL will not 
 #'   impute or change 0 values, GBM (preferred) and CZM are from the 
 #'   zCompositions R package, and prior will simply add 0.5 to all counts.
+#' @param distance can be euclidian, bray, or jaccard. euclidian on log-ratio
+#'   transformed data is the same as the Aitchison distance. default=euclidian
 #' @param log is a logical. log transform the RLE or TMM outputs, default=FALSE
 #' @param group is a vector containing group information. Required for clr, RLE, 
 #'   TMM, lvha, and iqlr based normalizations.
@@ -28,10 +30,10 @@
 #' library(ALDEx2)
 #' data(selex)
 #' group = c(rep('N', 7), rep('S', 7))
-#' x <- aIc.perturb(selex, group=group, norm.method='clr', zero.method='prior')
+#' x <- aIc.perturb(selex, group=group, norm.method='clr', distance='euclidian', zero.method='prior')
 #' plot(x$plot, main=x$main, ylab=x$ylab, xlab=x$xlab)
 #' @export
-aIc.perturb <- function(data, norm.method='prop', zero.remove=0.95, zero.method='prior', log=FALSE, group=NULL){
+aIc.perturb <- function(data, norm.method='prop', zero.remove=0.95, zero.method='prior', distance='euclidian', log=FALSE, group=NULL){
   
   # remove features with 0 counts across >95% of samples 
   data <- remove_0(data, zero.remove)
@@ -48,8 +50,8 @@ aIc.perturb <- function(data, norm.method='prop', zero.remove=0.95, zero.method=
   x.1 <- aIc.get.data(data, group=group, norm.method=norm.method, log=log)
   x.2 <- aIc.get.data(data.perturb, group=group, norm.method=norm.method, log=log)
 
-  dist.all <- dist(t(x.1))
-  dist.perturb <- dist(t(x.2))
+  dist.all <- aIc.get.dist(x.1, distance)
+  dist.perturb <- aIc.get.dist(x.2, distance)
   
     plot.out <- hist((dist.all-dist.perturb)/dist.all, breaks=99, plot=F) 
     density.out <- density((dist.all-dist.perturb)/dist.all) 

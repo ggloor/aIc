@@ -14,6 +14,7 @@ aIc.dominant(
   zero.remove = 0.95,
   zero.method = "prior",
   log = FALSE,
+  distance = "euclidian",
   group = NULL
 )
 }
@@ -30,6 +31,9 @@ impute or change 0 values, GBM (preferred) and CZM are from the
 zCompositions R package, and prior will simply add 0.5 to all counts.}
 
 \item{log}{is a logical. log transform the RLE or TMM outputs, default=FALSE}
+
+\item{distance}{can be euclidian, bray, or jaccard. euclidian on log-ratio
+transformed data is the same as the Aitchison distance. default=euclidian}
 
 \item{group}{is a vector containing group information. Required for clr, RLE, 
 TMM, lvha, and iqlr based normalizations.}
@@ -53,7 +57,7 @@ Returns a list with the overlap between distances in the full and
 library(ALDEx2)
 data(selex)
 group = c(rep('N', 7), rep('S', 7))
-x <- aIc.dominant(selex, group=group, norm.method='clr', zero.method='prior')
+x <- aIc.dominant(selex, group=group, norm.method='clr', distance='euclidian', zero.method='prior')
 plot(x$plot, main=x$main, ylab=x$ylab, xlab=x$xlab)
 }
 \author{

@@ -95,3 +95,13 @@ zero.sub <- function(data, zero.method){
   }
   return(data)
 }
+
+# convenience distance function
+# shared by aIc.dominant, aIc.perturb, aIc.scale
+aIc.get.dist <- function(x, distance){
+  if(distance == 'euclidian' ){
+    return(dist(t(x), distance) )
+  }else if(distance == 'bray' | distance == 'jaccard'){
+  	return(vegan::vegdist(t(x), distance))
+  }  
+}
