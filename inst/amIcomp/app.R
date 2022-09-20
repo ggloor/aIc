@@ -19,7 +19,7 @@ ui <- fluidPage(
 
 
      
-      fileInput("upload", NULL, accept=c(".csv", ".tsv", ".txt"), buttonLabel = "selex or Upload .tsv ..."), 
+      fileInput("upload", NULL, accept=c(".txt", ".tsv"), buttonLabel = "selex or Upload .tsv ..."), 
 # hard coded to 2 lines
       numericInput("z.rem", "max 0 proportion", value = 0.95, min = 0, max=1, step = 0.05),
       tableOutput("files") ,
@@ -58,7 +58,8 @@ ui <- fluidPage(
       selectInput("distance", "Distance measure:",
                   c("Euclidian (Aitchison if clr)" = "euclidian",
                     "Bray Curtis" = "bray",
-                    "Jaccard" = "jaccard")),
+                    "Jaccard" = "jaccard",
+                    "Jensen-Shannon" = "jsd")),
 
       # Input: Checkbox for whether outliers should be included ----
       checkboxInput("log", "Take log of transform (prop, TMM, RLE)", F)
@@ -98,12 +99,12 @@ server <- function(input, output) {
 
     req(input$upload)
     
-    ext <- tools::file_ext(input$upload$name)
-    switch(ext,
-      csv = vroom::vroom(input$upload$datapath, delim = ","),
-      tsv = read.table(input$upload$datapath,header=T, row.names=1, sep = "\t"),
-      validate("Invalid file; Please upload a .csv or .tsv file")
-    )
+    #ext <- tools::file_ext(input$upload$name)
+    #switch(ext,
+     # csv = vroom::vroom(input$upload$datapath, delim = ","),
+      tsv = read.table(input$upload$datapath,header=T, row.names=1, sep = "\t")
+   #   validate("Invalid file; Please upload a .txt or .tsv file")
+   # )
     }
   })
   
