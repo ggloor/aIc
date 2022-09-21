@@ -54,7 +54,6 @@ Returns a list with the overlap between distances in the full and
   compositional datasets.
 }
 \examples{
-library(ALDEx2)
 data(selex)
 group = c(rep('N', 7), rep('S', 7))
 x <- aIc.dominant(selex, group=group, norm.method='clr', distance='euclidian', zero.method='prior')

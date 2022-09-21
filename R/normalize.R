@@ -1,5 +1,6 @@
 #' @importFrom edgeR DGEList calcNormFactors
 #' @importFrom stats as.dist
+#' @importFrom ALDEx2 aldex.set.mode
 # convenience functions
 
 aIc.get.data <- function(data, norm.method=norm.method, group=NULL, log=FALSE){

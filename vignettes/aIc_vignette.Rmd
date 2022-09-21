@@ -52,12 +52,11 @@ High throughput sequencing datasets share study-design specific properties, as s
 library(aIc)
 library(matrixcalc)
 library(edgeR)
-library(ALDEx2)
 data(selex)
 group <- c(rep('n',7), rep('s',7))
 ```
 
-The selex dataset^[McMurrough et al (2018) https://doi.org/10.1093/nar/gky976] is a useful example because we have a standard of truth, and because it behaves so badly with so many tools since it does not have a predictable relative abundance-variance relationship. It is included as the test dataset in the ALDEx2 R package^[Fernandes et al (2014) https://doi.org/10.1186/2049-2618-2-15] and can be accessed there. 
+The selex dataset^[McMurrough et al (2018) https://doi.org/10.1093/nar/gky976] is a useful example because we have a standard of truth, and because it behaves so badly with so many tools since it does not have a predictable relative abundance-variance relationship. It is the test dataset in the ALDEx2 R package^[Fernandes et al (2014) https://doi.org/10.1186/2049-2618-2-15]. 
 
 ## Sub-compositions and correlation (coherence)
 

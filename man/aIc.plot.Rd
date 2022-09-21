@@ -17,7 +17,6 @@ returns a plot of the density of the distance test results.
 \code{aIc.plot} plots the result of the distance tests.
 }
 \examples{
-library(ALDEx2)
 data(selex)
 group = c(rep('N', 7), rep('S', 7))
 test.out <- aIc.dominant(selex, norm.method='prop', group=group)

@@ -28,9 +28,7 @@
 #' @importFrom stats cor cov dist runif
 #' @importFrom zCompositions cmultRepl lrSVD
 #' @importFrom vegan vegdist
-#' @import ALDEx2 
 #' @examples
-#' library(ALDEx2)
 #' data(selex)
 #' group = c(rep('N', 7), rep('S', 7))
 #' x <- aIc.coherent(selex, group=group, norm.method='clr', zero.method='prior')

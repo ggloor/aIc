@@ -54,7 +54,6 @@ Returns a list with the maximum proportional perturbation in \code{ol}
   compositional datasets.
 }
 \examples{
-library(ALDEx2)
 data(selex)
 group = c(rep('N', 7), rep('S', 7))
 x <- aIc.perturb(selex, group=group, norm.method='clr', distance='euclidian', zero.method='prior')

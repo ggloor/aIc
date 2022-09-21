@@ -45,7 +45,6 @@ of features in common of the full dataset and a subset of the dataset.
 This is expected to be false for all compositional datasets and transforms.
 }
 \examples{
-library(ALDEx2)
 data(selex)
 group = c(rep('N', 7), rep('S', 7))
 x <- aIc.coherent(selex, group=group, norm.method='clr', zero.method='prior')

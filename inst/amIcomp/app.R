@@ -3,7 +3,6 @@
 #
 
 library(shiny)
-library(ALDEx2)
 library(aIc)
 
 ui <- fluidPage(

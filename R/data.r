@@ -1,3 +1,13 @@
+#' Selection-based differential sequence variant abundance dataset
+#'
+#' This data set gives the differential abundance of 1600 enzyme variants
+#' grown under selective (NS) and selective (S) conditions
+#'
+#' @usage data(selex)
+#' @format A data frame with 14 columns and 1600 rows
+#' @source DOI:10.1073/pnas.1322352111
+"selex"
+
 #' Saccharomyces cerevisiae transcriptome
 #'
 #' A count table of a highly replicated RNA-seq experiment
@@ -30,7 +40,7 @@
 #'
 #' @usage data(metaTscome)
 #' @format A data frame with 17 columns and 3647 rows
-#' @source doi:10.1007/978-3-030-71175-7_17 and doi:10.1007/ 978-1-4939-8728-3\_13
+#' @source doi:10.1007/978-3-030-71175-7_17 and doi:10.1007/978-1-4939-8728-3_13
 "metaTscome"
 
 #' 16S rRNA tag-sequencing data 

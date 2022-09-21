@@ -23,7 +23,6 @@
 #' @importFrom stats density
 #'
 #' @examples
-#' library(ALDEx2)
 #' data(selex)
 #' group = c(rep('N', 7), rep('S', 7))
 #' x <- aIc.singular(selex, group=group, norm.method='clr', zero.method='prior')

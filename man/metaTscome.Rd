@@ -8,7 +8,7 @@
 A data frame with 17 columns and 3647 rows
 }
 \source{
-doi:10.1007/978-3-030-71175-7_17 and doi:10.1007/ 978-1-4939-8728-3\_13
+doi:10.1007/978-3-030-71175-7_17 and doi:10.1007/978-1-4939-8728-3_13
 }
 \usage{
 data(metaTscome)

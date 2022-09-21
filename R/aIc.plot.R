@@ -11,7 +11,6 @@
 #' @importFrom graphics text abline rect layout par
 #'
 #' @examples
-#' library(ALDEx2)
 #' data(selex)
 #' group = c(rep('N', 7), rep('S', 7))
 #' test.out <- aIc.dominant(selex, norm.method='prop', group=group)
