@@ -165,6 +165,8 @@ The tests have common and specific parameters. Common parameters are:
 
 - the `aIc.coherent` function takes an additional argument to determine the correlation measure and pearson, spearman or kendall are available options.
 
+There is also a `shiny` app that can be used for interactive examination of datasets. This automatically loads the selex dataset, but any tabular count data with samples by column can be used as input. This can be launched with the command: `aIc.runExample`.
+
 # Conclusion
 
 I hope you can see that data pathologies can have real world implications for your analysis.

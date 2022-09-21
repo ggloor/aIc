@@ -11,7 +11,7 @@ A data frame with 359 columns and 860 rows
 doi: 10.1128/mSphere.00327-17
 }
 \usage{
-meta16S
+data(meta16S)
 }
 \description{
 A count table of a 16S rRNA amplicon data

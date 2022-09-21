@@ -11,7 +11,7 @@ A data frame with 96 columns and 5892 rows
 DOI: 10.1261/rna.053959.115 and PRJEB5348
 }
 \usage{
-transcriptome
+data(transcriptome)
 }
 \description{
 A count table of a highly replicated RNA-seq experiment

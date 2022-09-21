@@ -11,7 +11,7 @@ A data frame with 2000 columns and 1508 rows
 https://www.nature.com/articles/s41592-019-0372-4
 }
 \usage{
-singleCell
+data(singleCell)
 }
 \description{
 A count table of a single cell transcriptome data subset from 

@@ -1,4 +1,5 @@
 #' @importFrom edgeR DGEList calcNormFactors
+#' @importFrom stats as.dist
 # convenience functions
 
 aIc.get.data <- function(data, norm.method=norm.method, group=NULL, log=FALSE){
@@ -129,7 +130,7 @@ dist.JSD <- function(inMatrix, pseudocount=0.000001, ...) {
 		}
 	}
 	colnames -> colnames(resultsMatrix) -> rownames(resultsMatrix)
-	as.dist(resultsMatrix)->resultsMatrix
+	stats::as.dist(resultsMatrix)->resultsMatrix
 	attr(resultsMatrix, "method") <- "dist"
 	return(resultsMatrix)
 }

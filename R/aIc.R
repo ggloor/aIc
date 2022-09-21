@@ -53,8 +53,8 @@ aIc.coherent <- function(data, norm.method="prop", zero.remove=0.95, zero.method
   x.1 <- aIc.get.data(data, group=group, norm.method=norm.method, log=log)
   x.2 <- aIc.get.data(data.sub, group=group, norm.method=norm.method, log=log)
   
-  c.x1 <- cor(t(x.1), method=cor.test)
-  c.x2 <- cor(t(x.2), method=cor.test)
+  c.x1 <- stats::cor(t(x.1), method=cor.test)
+  c.x2 <- stats::cor(t(x.2), method=cor.test)
   
   v.x1 <- c(c.x1[1:size.sub,1:size.sub])
   v.x2 <- c(c.x2)

@@ -11,7 +11,7 @@ A data frame with 17 columns and 3647 rows
 doi:10.1007/978-3-030-71175-7_17 and doi:10.1007/ 978-1-4939-8728-3\_13
 }
 \usage{
-metaTscome
+data(metaTscome)
 }
 \description{
 A count table of a mixed population or metatranscriptome 

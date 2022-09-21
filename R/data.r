@@ -4,6 +4,7 @@
 #' with samples by column and genes by row. Two groups composed
 #' of SNF2 knockout and WT, 48 samples in each.
 #'
+#' @usage data(transcriptome)
 #' @format A data frame with 96 columns and 5892 rows
 #' @source DOI: 10.1261/rna.053959.115 and PRJEB5348
 "transcriptome"
@@ -15,6 +16,7 @@
 #' memory T cells, and cytotoxic T cells, 1000 cells per group.
 #' samples are by column and genes are by row. 
 #'
+#' @usage data(singleCell)
 #' @format A data frame with 2000 columns and 1508 rows
 #' @source https://www.nature.com/articles/s41592-019-0372-4
 "singleCell"
@@ -26,6 +28,7 @@
 #' samples per group respectively. samples are by column and 
 #' functions are by row.  
 #'
+#' @usage data(metaTscome)
 #' @format A data frame with 17 columns and 3647 rows
 #' @source doi:10.1007/978-3-030-71175-7_17 and doi:10.1007/ 978-1-4939-8728-3\_13
 "metaTscome"
@@ -36,9 +39,7 @@
 #' Two groups, pupils and centenarians are represented with 198
 #' and 161 samples per group respectively. samples are by column  
 #' and OTU ids are by row.  
-#'
+#' @usage data(meta16S)
 #' @format A data frame with 359 columns and 860 rows
 #' @source doi: 10.1128/mSphere.00327-17
 "meta16S"
-
-
