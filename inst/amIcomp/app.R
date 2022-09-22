@@ -122,9 +122,9 @@ server <- function(input, output) {
       x <- aIc.perturb(up.data(), norm.method=input$norm, zero.method=zero.method, zero.remove=input$z.rem, distance=input$distance, log=input$log, group=group)
       aIc.plot(x)
       if(x$is.perturb == 'Yes'){
-        output$caption <- renderText({paste('The data are approximately perturbation invariant with transform ', input$norm,". The maximum observed relative perturbation is: ", x$ol , sep="")})
+        output$caption <- renderText({paste('The data are approximately perturbation invariant with transform ', input$norm,' and distance ', input$distance, ". The maximum observed relative perturbation is: ", x$ol , sep="")})
       } else if(x$is.perturb == 'No') {
-        output$caption <- renderText({paste('The data are not perturbation invariant with transform ', input$norm,'. The maximum observed relative perturbation is: ', x$ol, ' fold change. Please try the clr transform on this dataset.', sep="")})
+        output$caption <- renderText({paste('The data are not perturbation invariant with transform ', input$norm,' and distance ', input$distance, '. The maximum observed relative perturbation is: ', x$ol, ' fold change. Please try the clr transform on this dataset.', sep="")})
       }
 
 # dominance
@@ -142,9 +142,9 @@ server <- function(input, output) {
       x <- aIc.scale(up.data(), norm.method=input$norm, zero.method=zero.method, zero.remove=input$z.rem, distance=input$distance, log=input$log, group=group)
       aIc.plot(x)
       if(x$is.scale == 'Yes'){
-        output$caption <- renderText({paste('The data are scale invariant with transform ', input$norm,". The proportion of non-scale invariant distances in the sub-compositon is: ", round(x$ol,2), "%.", sep="")})
+        output$caption <- renderText({paste('The data are scale invariant with transform ', input$norm,' and distance ', input$distance, ". The proportion of non-scale invariant distances in the sub-compositon is: ", round(x$ol,2), "%.", sep="")})
       } else if(x$is.scale == 'No') {
-        output$caption <- renderText({paste('The data are not scale invariant with transform ', input$norm,'. The proportion of non-scale consistent distances is: ', round(x$ol,2), ' fold change. Please try the clr transform on this dataset.', sep="")})
+        output$caption <- renderText({paste('The data are not scale invariant with transform ', input$norm,' and distance ', input$distance, '. The proportion of non-scale consistent distances is: ', round(x$ol,2), ' fold change. Please try the clr transform on this dataset.', sep="")})
       }
 
 # coherence      
