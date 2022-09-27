@@ -82,11 +82,20 @@ ui <- fluidPage(
 )
 
 # Define server logic to plot various variables and load data ----
-server <- function(input, output) {
-
-  options(shiny.maxRequestSize=10*1024^2)
+server <- function(input, output, session) {
   
-   # Generate a plot of the requested variable against mpg ----
+  #options(shiny.maxRequestSize=10*1024^2)
+  onStop(function(){ 
+    
+    # restore to default shiny.maxRequestSize
+    options(shiny.maxRequestSize=5*1024^2)
+
+    print("bye!\n")
+    
+  })
+    
+  options(shiny.maxRequestSize=10*1024^2)
+
   # and only exclude outliers if requested
   output$testPlot <- renderPlot({
 
@@ -136,7 +145,7 @@ server <- function(input, output) {
       } else if(x$is.dominant == 'No') {
         output$caption <- renderText({paste('The data are not distance dominant with transform ', input$norm,' and distance ', input$distance, '. The proportion of non-dominant distances in the sub-compositon is: ', 1 - round(x$ol,2), '%. Please try the clr transform on this dataset.', sep="")})
       }
-
+      
 # scale
     } else if (input$test=='scale'){
       x <- aIc.scale(up.data(), norm.method=input$norm, zero.method=zero.method, zero.remove=input$z.rem, distance=input$distance, log=input$log, group=group)
@@ -170,8 +179,6 @@ server <- function(input, output) {
       }
     }
   })
-  
- 
 }
 
 # Create Shiny app ----

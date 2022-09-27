@@ -8,7 +8,7 @@
 #'
 #' @author Greg Gloor
 #' 
-#' @importFrom graphics text abline rect layout par
+#' @importFrom graphics text abline rect layout par on.exit
 #'
 #' @examples
 #' data(selex)
@@ -50,20 +50,17 @@ aIc.plot <- function(test.out){
        text(0, max(x$density$y) *1.05, labels='invariant')
      }
   } else if(names(x)[2] == "is.coherent"){
-#     plot(x$plot, pch=19, cex=0.5, col=rgb(0,0,0,0.2), main=x$main, xlim=c(-1,1),
-#       ylim=c(-1,1))
-#       abline(0,1, lty=2, lwd=3, col='red')
-#     if(x[[2]] == "No") {
-#       text(-0.5, 0.8 *1.05, labels='not coherent')
-#     } else {
-#       text(-0.5, 0.8 *1.05, labels='coherent')
-#     }
-     
+  
+     # reset parameters on exit from this 
+     opar <- par(mar=c(5.1, 4.1, 4.1, 2.1), mfrow=c(1,1))
+     on.exit(par(opar))
+
      layout(matrix(c(2,0,1,3), nrow=2, ncol=2, byrow=T), widths=c(4,1), 
        heights=c(1,4), respect=T)
 
 	# mar(B,L,T,R)
 	# top and right of main plot to 0 margin
+
 	par(mar=c(5.1,4.1,0,0))
 	plot(x$plot, pch=19, col=rgb(0,0,0,0.2), ces=0.5, xlim=c(-1,1), 
 	  ylim=c(-1,1))
@@ -81,10 +78,7 @@ aIc.plot <- function(test.out){
 	par(mar=c(5.1,0,0,0))
 	d.jnk <- density(x$plot[,1])
 	plot(d.jnk$y, d.jnk$x, type='l', col='grey40', xlab=NA, ylab=NA, bty='n', xaxt='n', yaxt='n', lwd=2)
-
-
-	par(mar=c(5.1,4.1,4.1,2.1))
-
+    
   } else {
   	stop("this will only plot for the dominance, scale, coherence or perturbation tests")
   }

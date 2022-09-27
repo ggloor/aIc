@@ -54,6 +54,7 @@ library(matrixcalc)
 library(edgeR)
 data(selex)
 group <- c(rep('n',7), rep('s',7))
+oldrow <- par(mfrow=c(1,1))
 ```
 
 The selex dataset^[McMurrough et al (2018) https://doi.org/10.1093/nar/gky976] is a useful example because we have a standard of truth, and because it behaves so badly with so many tools since it does not have a predictable relative abundance-variance relationship. It is the test dataset in the ALDEx2 R package^[Fernandes et al (2014) https://doi.org/10.1186/2049-2618-2-15]. 
@@ -77,6 +78,7 @@ test.cor.TMM$is.coherent
 
 # plot the results
 par(mfrow=c(1,2))
+on.exit(par(oldrow))
 aIc.plot(test.cor.clr)
 aIc.plot(test.cor.TMM)
 ```
@@ -99,6 +101,7 @@ test.dom.TMM$is.dominant
 
 # plot the results
 par(mfrow=c(1,2))
+on.exit(par(oldrow))
 aIc.plot(test.dom.clr)
 aIc.plot(test.dom.TMM)
 
@@ -121,6 +124,7 @@ test.scale.TMM <- aIc.scale(selex, group=group, zero.method='GBM',
 test.scale.clr$is.scale
 test.scale.TMM$is.scale
 par(mfrow=c(1,2))
+on.exit(par(oldrow))
 aIc.plot(test.scale.clr)
 aIc.plot(test.scale.TMM)
 ```
@@ -141,6 +145,7 @@ test.perturb.TMM <- aIc.perturb(selex, group=group, zero.method='prior',
 test.perturb.clr$is.perturb
 test.perturb.TMM$is.perturb
 par(mfrow=c(1,2))
+on.exit(par(oldrow))
 aIc.plot(test.perturb.clr)
 aIc.plot(test.perturb.TMM)
 

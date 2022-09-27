@@ -5,7 +5,7 @@ Version: 0.99
 Date: 2022-09-22
 Author: Greg Gloor
 Maintainer: Greg Gloor <ggloor@uwo.ca>
-Description: A set of tests for compositional pathologies. Tests for coherence of correlations with \code{aIc.coherent}, compositional dominance of distance with \code{aIc.dominant}, compositional perturbation invariance with \code{aIc.perturb}and singularity of the covariation matrix with \code{aIc.singular}. Currently tests five data transformations: prop, clr, TMM, TMMwsp, and RLE.
+Description: A set of tests for compositional pathologies. Tests for coherence of correlations with \code{aIc.coherent} as suggested by (Erb et al. (2020) <doi.org/10.1016/j.acags.2020.100026>),  compositional dominance of distance with \code{aIc.dominant}, compositional perturbation invariance with \code{aIc.perturb} as suggested by (Aitchison (1992) <doi.org/10.1007/BF00891269>) and singularity of the covariation matrix with \code{aIc.singular}. Currently tests five data transformations: prop, clr, TMM, TMMwsp, and RLE from the R packages ALDEx2, edgeR and DESeq2 (Fernandes et al (2014) <10.1186/2049-2618-2-15>, Anders et al. (2013)<10.1038/nprot.2013.099>).
 License: GPL (>= 3)
 Encoding: UTF-8
 URL: https://github.com/ggloor/aIc
