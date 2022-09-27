@@ -8,6 +8,10 @@ the user can upload their own local dataset and adjust groups accordingly.}
 \usage{
 aIc.runExample()
 }
+\value{
+No return value, but instead opens a shiny connection to your 
+default web browser with the selex dataset as an example.
+}
 \description{
 \code{aIc.runExample} loads the associated shiny app
 This will load the selex example dataset with the default group sizes,

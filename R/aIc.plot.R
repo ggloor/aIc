@@ -8,7 +8,7 @@
 #'
 #' @author Greg Gloor
 #' 
-#' @importFrom graphics text abline rect layout par on.exit
+#' @importFrom graphics text abline rect layout par
 #'
 #' @examples
 #' data(selex)
