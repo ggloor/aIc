@@ -78,9 +78,9 @@ test.cor.TMM$is.coherent
 
 # plot the results
 par(mfrow=c(1,2))
-on.exit(par(oldrow))
 aIc.plot(test.cor.clr)
 aIc.plot(test.cor.TMM)
+par(oldrow)
 ```
 
 Thus, we see that under the clr and TMM, features in common between sub-compositions and the full composition display variable correlations with the clr correlation displaying a wider range of correlations than the log of TMM. What we learn from this is that the correlation we observe is affected by the choice of features we include in the dataset and so any correlation network will not be robust.
@@ -101,10 +101,9 @@ test.dom.TMM$is.dominant
 
 # plot the results
 par(mfrow=c(1,2))
-on.exit(par(oldrow))
 aIc.plot(test.dom.clr)
 aIc.plot(test.dom.TMM)
-
+par(oldrow)
 ```
 
 Here both transforms are distance dominant and the x-axis is the proportion of divergenece from the distances in the full composition. Both the clr (left) and log TMM distances display a bimodal distribution that is entirely to the right of the red cutoff line of dominance.
@@ -116,7 +115,6 @@ The third test is scale invariance. That is, the data should have the same dista
 
 
 ```{r, echo=T}
-
 test.scale.clr <- aIc.scale(selex, group=group, zero.method='GBM', 
   norm.method='clr', log=F)
 test.scale.TMM <- aIc.scale(selex, group=group, zero.method='GBM', 
@@ -124,9 +122,9 @@ test.scale.TMM <- aIc.scale(selex, group=group, zero.method='GBM',
 test.scale.clr$is.scale
 test.scale.TMM$is.scale
 par(mfrow=c(1,2))
-on.exit(par(oldrow))
 aIc.plot(test.scale.clr)
 aIc.plot(test.scale.TMM)
+par(oldrow)
 ```
 
 Here both transforms are scale invariant within a tolerance of plus or minus 1%. The x-axis is the proportion of divergenece from the distances in the unscaled composition and the red box indicates the limits of the tolerance. 
@@ -145,10 +143,9 @@ test.perturb.TMM <- aIc.perturb(selex, group=group, zero.method='prior',
 test.perturb.clr$is.perturb
 test.perturb.TMM$is.perturb
 par(mfrow=c(1,2))
-on.exit(par(oldrow))
 aIc.plot(test.perturb.clr)
 aIc.plot(test.perturb.TMM)
-
+par(oldrow)
 ```
 
 Here the clr is perturbation invariant within limits, while the TMM is not. The x-axis is the proportion of divergenece from the distances in the unperturbed composition. Here the clr is the obviously better choice as systematic differences in collection of features has a substantially smaller effect on the distances between samples than does the TMM normalization. 
@@ -161,15 +158,15 @@ The tests have common and specific parameters. Common parameters are:
 
 - `zero.remove` the maximum occurrence of zeros across all samples for a feature. Features with 0 greater than this value will be removed prior to analysis. This is a very conservative filter compared to common practice.
 
-- `zero.method` the 0 replacement strategy. By default we add a prior of 0.5 counts to every value in the data like in the `ALDEx2` package. An alternative is to use the `GBM` method of zero imputation that is instantiated in the `zCompositions` package or to not replace 0s although this causes any logarithm-dependent method to fail. Be cautious with the `GBM` method as it can take some time to run with very large datasets (single cell).
+- `zero.method` the 0 replacement strategy. By default we add a prior of 0.5 counts to every value in the data like in the `ALDEx2` package. An alternative is to use the `GBM` method of zero imputation that is instantiated in the `zCompositions` package or to not replace 0s although this causes any logarithm-dependent method to fail. Be cautious with the `GBM` method as it can take some time to run with very large datasets (e.g. single cell).
 
 - `log` take the logarithm of non-logarithmic transforms. Ignored for clr, iqlr and lvha normalization methods since these are log-ratios.
 
 - `group` a group vector since many of the normalizations need group information.
 
-- the `aIc.coherent` function takes an additional argument to determine the correlation measure and pearson, spearman or kendall are available options.
+- the `aIc.coherent()` function takes an additional argument to determine the correlation measure and pearson, spearman or kendall are available options.
 
-There is also a `shiny` app that can be used for interactive examination of datasets. This automatically loads the selex dataset, but any tabular count data with samples by column can be used as input. This can be launched with the command: `aIc.runExample`.
+There is also a `shiny` app that can be used for interactive examination of datasets. This automatically loads the selex dataset, but any tabular count data with samples by column can be used as input. This can be launched with the command: `aIc.runExample()`.
 
 # Conclusion
 

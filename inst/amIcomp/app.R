@@ -84,14 +84,12 @@ ui <- fluidPage(
 # Define server logic to plot various variables and load data ----
 server <- function(input, output, session) {
   
-  #options(shiny.maxRequestSize=10*1024^2)
   onStop(function(){ 
-    
+   
     # restore to default shiny.maxRequestSize
     options(shiny.maxRequestSize=5*1024^2)
-
-    print("bye!\n")
-    
+    print("shiny maxRequestSize reset to default")
+   
   })
     
   options(shiny.maxRequestSize=10*1024^2)
@@ -115,7 +113,7 @@ server <- function(input, output, session) {
    # )
     }
   })
-  
+    
   output$head <- renderTable({
     head(up.data(), 2)
   })
@@ -128,7 +126,8 @@ server <- function(input, output, session) {
      
 # perturbation 
     if(input$test=='pert'){
-      x <- aIc.perturb(up.data(), norm.method=input$norm, zero.method=zero.method, zero.remove=input$z.rem, distance=input$distance, log=input$log, group=group)
+      x <- aIc.perturb(up.data(), norm.method=input$norm, zero.method=zero.method,
+        zero.remove=input$z.rem, distance=input$distance, log=input$log, group=group)
       aIc.plot(x)
       if(x$is.perturb == 'Yes'){
         output$caption <- renderText({paste('The data are approximately perturbation invariant with transform ', input$norm,' and distance ', input$distance, ". The maximum observed relative perturbation is: ", x$ol , sep="")})
@@ -138,7 +137,8 @@ server <- function(input, output, session) {
 
 # dominance
     } else if (input$test=='dom'){
-      x <- aIc.dominant(up.data(), norm.method=input$norm,zero.method=zero.method, zero.remove=input$z.rem,  log=input$log, distance=input$distance, group=group)
+      x <- aIc.dominant(up.data(), norm.method=input$norm,zero.method=zero.method,
+        zero.remove=input$z.rem,  log=input$log, distance=input$distance, group=group)
       aIc.plot(x)
       if(x$is.dominant == 'Yes'){
         output$caption <- renderText({paste('The data are distance dominant with transform ', input$norm, ' and distance ', input$distance, '. The proportion of non-dominant distances in the sub-compositon is: ', 1 - round(x$ol,2), "%.", sep="")})
@@ -148,7 +148,8 @@ server <- function(input, output, session) {
       
 # scale
     } else if (input$test=='scale'){
-      x <- aIc.scale(up.data(), norm.method=input$norm, zero.method=zero.method, zero.remove=input$z.rem, distance=input$distance, log=input$log, group=group)
+      x <- aIc.scale(up.data(), norm.method=input$norm, zero.method=zero.method,
+        zero.remove=input$z.rem, distance=input$distance, log=input$log, group=group)
       aIc.plot(x)
       if(x$is.scale == 'Yes'){
         output$caption <- renderText({paste('The data are scale invariant with transform ', input$norm,' and distance ', input$distance, ". The proportion of non-scale invariant distances in the sub-compositon is: ", round(x$ol,2), "%.", sep="")})
@@ -158,8 +159,12 @@ server <- function(input, output, session) {
 
 # coherence      
     } else if (input$test=='cohere.sp' || input$test=='cohere.pe'){
-      if(input$test=='cohere.sp') x <- aIc.coherent(up.data(), norm.method=input$norm, zero.method=zero.method, zero.remove=input$z.rem,  log=input$log, group=group, cor.test='spearman')
-      if(input$test=='cohere.pe') x <- aIc.coherent(up.data(), norm.method=input$norm, zero.method=zero.method, zero.remove=input$z.rem,  log=input$log, group=group, cor.test='pearson')
+      if(input$test=='cohere.sp') x <- aIc.coherent(up.data(), norm.method=input$norm,
+        zero.method=zero.method, zero.remove=input$z.rem,  log=input$log, group=group,
+       cor.test='spearman')
+      if(input$test=='cohere.pe') x <- aIc.coherent(up.data(), norm.method=input$norm,
+        zero.method=zero.method, zero.remove=input$z.rem,  log=input$log, group=group, 
+        cor.test='pearson')
       aIc.plot(x)
       if(x$is.coherent == 'Yes' & input$norm != 'none'){
         output$caption <- renderText({paste('The data are sub-compositionally coherent with ', input$norm,". Network analysis and correlation inference may be OK.", sep="")})
@@ -171,7 +176,8 @@ server <- function(input, output, session) {
 
     # singularity      
     } else if (input$test=='sing'){
-      x <- aIc.singular(up.data(), norm.method=input$norm, zero.method=zero.method, zero.remove=input$z.rem,  log=input$log, group=group)
+      x <- aIc.singular(up.data(), norm.method=input$norm, zero.method=zero.method,
+        zero.remove=input$z.rem,  log=input$log, group=group)
       if(x$is.singular == 'Yes'){
        output$caption <- renderText({paste('The data are singular with transform ', input$norm,'. When doing dimension reduction you need to be aware of compositional effects; see Greenacre and Aitchison 2002 "Biplots of compositional data" JRSA 51:375. You likey will be best served using a compositional analysis approach.', sep="")})
       } else if (x$is.singular == 'No'){
