@@ -44,6 +44,7 @@ ui <- fluidPage(
                     "edgeR TMM" = "TMM",
                     "edgeR TMMwsp" = "TMMwsp",
                     "DESeq RLE" = "RLE",
+                    "entropy" = "H",
                     "none" = "none")),
 
       # Input: Selector for zero treatment ----

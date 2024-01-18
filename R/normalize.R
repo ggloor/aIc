@@ -15,7 +15,7 @@ aIc.get.data <- function(data, norm.method=norm.method, group=NULL, log=FALSE){
     norm.method='clr'
   }
 
-  valid.norm = c('none', 'prop', 'clr', 'TMM', 'TMMwsp', 'RLE', 'iqlr', 'lvha')
+  valid.norm = c('none', 'prop', 'clr', 'TMM', 'TMMwsp', 'RLE', 'iqlr', 'lvha', 'H')
   if(!(norm.method %in% valid.norm)) stop('valid normalizations are none, clr, iqlr, lvha, prop, TMM, TMMwsp, RLE')
   
   if(norm.method == 'none'){
@@ -31,7 +31,9 @@ aIc.get.data <- function(data, norm.method=norm.method, group=NULL, log=FALSE){
   } else if(norm.method == 'prop'){
     if(min(data)==0 & log==T) { stop ('cannot take logarithm of 0 values, choose a 0 replacement method') }
     x <- aIc.get.norm(data, norm.method='prop', log=log, den.vec=NULL)
-  } else if(norm.method %in% c('TMM', 'RLE', 'upperquartile', 'TMMwsp')){
+  } else if(norm.method=='H'){
+    x <- aIc.get.norm(data, norm.method='H', log=F, den.vec=NULL)
+  }else if(norm.method %in% c('TMM', 'RLE', 'upperquartile', 'TMMwsp')){
     if(min(data) == 0 & log==T) { stop ('cannot take logarithm of 0 values, choose a 0 replacement method') }
     if(is.null(group)){ stop('the group vector must be defined') }
     x <- aIc.get.norm(data, norm.method, group=group, log=log, den.vec=NULL)
@@ -53,6 +55,10 @@ aIc.get.norm <- function(data, group, norm.method, log=FALSE, den.vec=NULL){
 		}else{
 		  return( apply(data, 2, function(x) log( x/sum(x) ) )	)
 		}
+	} else if(norm.method=='H'){
+		log=F
+		jnk <- apply(data,2, function(x) x/sum(x))
+		return(apply(jnk, 2, function(x) log2(x) - -1*sum( x * log2(x))))
 	}
 	else {
 	  	y <- edgeR::DGEList(counts=data, group=group)
