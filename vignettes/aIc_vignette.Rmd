@@ -17,7 +17,9 @@ vignette: >
   
 # aIc and amIcomp implement simple test functions to determine if a particular dataset and transformation exhibit data pathologies that we can understand and control for. Since 'all models are wrong'[Box:1976] it is important to know at the outset what is wrong, why it is wrong, and how that wrongness would hinder general interpretability in some way. 
 
-To answer the question, posed by the name of the package, "am I compositional?" the answer is always yes! However, a more nuanced answer is that the effect of compositional limitations on the analysis can be large or small depending on the dataset, the normalization and the analysis conducted.
+To answer the question, posed by the name of the package, "am I compositional?" the answer for high throughput sequencing is always yes! However, a more nuanced answer is that the effect of compositional limitations on the analysis can be large or small depending on the dataset, the normalization and the analysis conducted.
+
+For a quick exploration of what this package does, you can run 'aIc.runExample()' to start up a shiny app with examples.
 
 
 Data normalization is an accepted preprocessing step used to provide desirable statistical characteristics so that the data can be analyzed using standard approaches. These normalizations are usually chosen to address the mean-variance relationship so that differential abundance or linear models can be used to assess how the features differ between groups. However, the effect on other properties of the data are usually not explored when the transformed data are  used for dimension reduction and ordination, clustering, feature selection and network analysis. All of these downstream methods assume that distances and correlations between features (anything that has a unique molecular identifier such as a gene, protein, function, operational taxonomic unit, etc) is relatively unaffected by the transformation, although this is generally not examined.
